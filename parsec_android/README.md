@@ -2,8 +2,6 @@
 
 The Android implementation of [`parsec`][1] plugin.
 
-This interface allows platform-specific implementations of the `parsec` plugin, as well as the plugin itself, to ensure they are supporting the same interface.
-
 ## Usage
 
 This package is [endorsed][2], which means you can simply use `parsec`
