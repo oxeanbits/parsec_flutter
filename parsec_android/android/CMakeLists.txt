@@ -10,7 +10,7 @@ project(muparserx CXX)
 ########################################################################
 # Extract version
 ########################################################################
-set(MUPARSERX_SOURCE_DIR src/main/equations-parser/parser)
+set(MUPARSERX_SOURCE_DIR src/main/equations_parser/parser)
 file(READ "${MUPARSERX_SOURCE_DIR}/mpDefines.h" mpDefines_h)
 string(REGEX MATCH "\\#define MUP_PARSER_VERSION _T\\(\"([0-9]+\\.[0-9]+\\.[0-9]+) \\(" MUPARSERX_VERSION_MATCHES "${mpDefines_h}")
 if(NOT MUPARSERX_VERSION_MATCHES)
@@ -79,12 +79,12 @@ install(TARGETS muparserx
 # Build pkg config file
 ########################################################################
 configure_file(
-    src/main/equations-parser/muparserx.in.pc
-    src/main/equations-parser/muparserx.pc
+    src/main/equations_parser/muparserx.in.pc
+    src/main/equations_parser/muparserx.pc
 @ONLY)
 
 install(
-    FILES src/main/equations-parser/muparserx.pc
+    FILES src/main/equations_parser/muparserx.pc
     DESTINATION lib${LIB_SUFFIX}/pkgconfig
 )
 
@@ -125,7 +125,7 @@ message(STATUS "Using install prefix: ${CMAKE_INSTALL_PREFIX}")
 
 add_library( parsec-lib
              SHARED
-             src/main/equations-parser/parsec-lib.cpp )
+             src/main/equations_parser/parsec-lib.cpp )
 
 find_library( log-lib
               log )
