@@ -15,28 +15,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String equation = "5*5 + 5!";
+  TextEditingController controller = TextEditingController();
   String _parsecResult = '';
   final Parsec _parsecPlugin = Parsec();
 
-  @override
-  void initState() {
-    super.initState();
-    initParsec();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initParsec() async {
+  Future<void> calculate() async {
     String parsecResult;
     try {
       parsecResult =
-          await _parsecPlugin.nativeEval(equation) ?? 'Invalid equation';
+          await _parsecPlugin.nativeEval(controller.text) ?? 'Invalid equation';
     } catch (e) {
       log(e.toString());
       parsecResult = 'Failed to eval equation';
     }
-
-    if (!mounted) return;
 
     setState(() {
       _parsecResult = parsecResult;
@@ -47,11 +38,28 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
+        appBar: AppBar(title: const Text('Parsec plugin example app')),
         body: Center(
-          child: Text('$equation = $_parsecResult\n'),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                TextField(controller: controller),
+                TextButton(
+                  onPressed: () => calculate(),
+                  child: const Text("Calculate"),
+                ),
+                const SizedBox(height: 50),
+                Text(
+                  _parsecResult,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
