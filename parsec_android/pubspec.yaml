@@ -1,0 +1,33 @@
+name: parsec_android
+description: Android implementation of the parsec plugin.
+version: 0.0.1
+homepage:
+publish_to: none
+
+environment:
+  sdk: ">=2.18.5 <3.0.0"
+  flutter: ">=2.5.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  parsec_platform_interface:
+    path: ../parsec_platform_interface/
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.1
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+  plugin:
+    implements: parsec
+    platforms:
+      android:
+        package: com.oxeanbits.parsec_android
+        pluginClass: ParsecAndroidPlugin
+        dartPluginClass: ParsecAndroid
