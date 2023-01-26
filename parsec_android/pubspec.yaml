@@ -25,7 +25,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   plugin:
-    implements: parsec_flutter
+    implements: parsec
     platforms:
       android:
         package: com.oxeanbits.parsec_android
