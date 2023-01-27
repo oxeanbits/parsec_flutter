@@ -18,14 +18,13 @@ To use this plugin, add `parsec` as a [dependency in your pubspec.yaml file](htt
 import 'package:parsec/parsec.dart';
 
 void main() {
-    final Parsec _parsecPlugin = Parsec();
-    String equation = '5*5 + 5!';
-    dynamic _parsecResult;
+    final Parsec parsec = Parsec();
+    dynamic result;
 
     try {
-        _parsecResult = await _parsecPlugin.eval(equation);
+        result = await parsec.eval('5*5 + 5!');
     } catch (e) {
-        _parsecResult = e.toString();
+        result = e.toString();
     }
 }
 ```
