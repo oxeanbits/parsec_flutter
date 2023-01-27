@@ -23,7 +23,7 @@ abstract class ParsecPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<dynamic> eval(String equation) {
-    throw UnimplementedError('eval() has not been implemented.');
+  Future<dynamic> nativeEval(String equation) {
+    throw UnimplementedError('nativeEval() has not been implemented.');
   }
 }
