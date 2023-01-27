@@ -13,13 +13,12 @@ import 'package:parsec/parsec.dart';
 
 void main() {
     final Parsec _parsecPlugin = Parsec();
-    String equation = '5*5 + 5!';
-    dynamic _parsecResult;
+    dynamic result;
 
     try {
-        _parsecResult = await _parsecPlugin.eval(equation);
+        result = await _parsecPlugin.eval('5*5 + 5!');
     } catch (e) {
-        _parsecResult = e.toString();
+        result = e.toString();
     }
 }
 ```
