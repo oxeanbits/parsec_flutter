@@ -37,7 +37,7 @@ class ParsecAndroidPlugin: FlutterPlugin, MethodCallHandler {
 
   private fun nativeEval(result: Result, equation: String) {
     val p = Parsec();
-    val parsecResult = p.eval(equation)
+    val parsecResult = p.evalValue(equation).getValue()
     result.success(parsecResult)
   }
 }

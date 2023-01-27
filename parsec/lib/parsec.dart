@@ -5,21 +5,10 @@
 // platforms in the `pubspec.yaml` at
 // https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
 
-import 'package:flutter/services.dart';
 import 'package:parsec_platform_interface/parsec_platform_interface.dart';
 
-const MethodChannel _channel = MethodChannel('parsec_android');
-
-class ParsecAndroid extends ParsecPlatform {
-  static void registerWith() {
-    ParsecPlatform.instance = ParsecAndroid();
-  }
-
-  @override
-  Future<dynamic> nativeEval(String equation) {
-    return _channel.invokeMethod(
-      'nativeEval',
-      {'equation': equation},
-    ).then((result) => result);
+class Parsec {
+  Future<dynamic> eval(String equation) {
+    return ParsecPlatform.instance.nativeEval(equation);
   }
 }
