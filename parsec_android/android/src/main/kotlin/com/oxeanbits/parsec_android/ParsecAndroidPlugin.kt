@@ -23,9 +23,9 @@ class ParsecAndroidPlugin: FlutterPlugin, MethodCallHandler {
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     when (call.method) {
-      "eval" -> {
+      "nativeEval" -> {
         val equation = call.argument<String>("equation") ?: return
-        eval(result, equation)
+        nativeEval(result, equation)
       }
       else -> result.notImplemented()
     }
@@ -35,7 +35,7 @@ class ParsecAndroidPlugin: FlutterPlugin, MethodCallHandler {
     channel.setMethodCallHandler(null)
   }
 
-  private fun eval(result: Result, equation: String) {
+  private fun nativeEval(result: Result, equation: String) {
     val p = Parsec();
     val parsecResult = p.evalValue(equation).getValue()
     result.success(parsecResult)
