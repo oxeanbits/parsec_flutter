@@ -1,6 +1,12 @@
 # parsec
 
-A Flutter plugin for calculating math equations using C++ library.
+The multi-platform `parsec` plugin for Flutter to calculate math equations using C++ library.
+
+## Platform Support
+
+| Android | iOS | Windows | Linux | MacOS | Web |
+| :-----: | :-: | :-----: | :---: | :---: | :-: |
+|   ✔️    | ❌️ |   ❌️   |  ❌️  |  ❌️  | ❌️ |
 
 ## Usage
 
@@ -12,11 +18,11 @@ To use this plugin, add `parsec` as a [dependency in your pubspec.yaml file](htt
 import 'package:parsec/parsec.dart';
 
 void main() {
-    final Parsec _parsecPlugin = Parsec();
+    final Parsec parsec = Parsec();
     dynamic result;
 
     try {
-        result = await _parsecPlugin.eval('5*5 + 5!');
+        result = await parsec.eval('5*5 + 5!');
     } catch (e) {
         result = e.toString();
     }
