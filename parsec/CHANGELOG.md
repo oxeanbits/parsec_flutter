@@ -1,3 +1,4 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+- Create the multi-platform `parsec` plugin for Flutter to calculate math equations using C++ library.
+- Supports Android.
