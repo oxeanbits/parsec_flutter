@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:parsec/parsec.dart';
@@ -20,17 +19,15 @@ class _MyAppState extends State<MyApp> {
   final Parsec _parsecPlugin = Parsec();
 
   Future<void> calculate() async {
-    String parsecResult;
+    dynamic parsecResult;
     try {
-      parsecResult =
-          await _parsecPlugin.nativeEval(controller.text) ?? 'Invalid equation';
+      parsecResult = await _parsecPlugin.eval(controller.text);
     } catch (e) {
-      log(e.toString());
-      parsecResult = 'Failed to eval equation';
+      parsecResult = e.toString();
     }
 
     setState(() {
-      _parsecResult = parsecResult;
+      _parsecResult = parsecResult.toString();
     });
   }
 
@@ -47,14 +44,18 @@ class _MyAppState extends State<MyApp> {
                 TextField(controller: controller),
                 TextButton(
                   onPressed: () => calculate(),
-                  child: const Text("Calculate"),
+                  child: const Text('Calculate'),
                 ),
-                const SizedBox(height: 50),
-                Text(
-                  _parsecResult,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                const SizedBox(height: 30),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Text(
+                      _parsecResult,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ],

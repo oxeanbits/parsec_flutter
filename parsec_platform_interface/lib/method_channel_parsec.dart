@@ -7,10 +7,10 @@ const _channel = MethodChannel('parsec_flutter');
 class MethodChannelParsec extends ParsecPlatform {
   /// The method channel used to interact with the native platform.
   @override
-  Future<String?> nativeEval(String equation) {
-    return _channel.invokeMethod<String>(
-      'nativeEval',
-      {"equation": equation},
-    ).then((String? result) => result);
+  Future<dynamic> eval(String equation) {
+    return _channel.invokeMethod(
+      'eval',
+      {'equation': equation},
+    ).then((result) => result);
   }
 }

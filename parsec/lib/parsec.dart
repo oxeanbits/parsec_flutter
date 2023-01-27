@@ -8,7 +8,7 @@
 import 'package:parsec_platform_interface/parsec_platform_interface.dart';
 
 class Parsec {
-  Future<String?> nativeEval(String equation) {
-    return ParsecPlatform.instance.nativeEval(equation);
+  Future<dynamic> eval(String equation) {
+    return ParsecPlatform.instance.eval(equation);
   }
 }

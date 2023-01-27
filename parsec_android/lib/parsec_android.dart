@@ -16,10 +16,10 @@ class ParsecAndroid extends ParsecPlatform {
   }
 
   @override
-  Future<String?> nativeEval(String equation) {
-    return _channel.invokeMethod<String>(
-      'nativeEval',
-      {"equation": equation},
-    ).then((String? result) => result);
+  Future<dynamic> eval(String equation) {
+    return _channel.invokeMethod(
+      'eval',
+      {'equation': equation},
+    ).then((result) => result);
   }
 }
