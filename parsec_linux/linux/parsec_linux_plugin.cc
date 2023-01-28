@@ -1,10 +1,18 @@
 #include "include/parsec_linux/parsec_linux_plugin.h"
+//#include "ext/equations-parser/parser/mpParser.h"
+#include "mpParser.h"
+#include "mpDefines.h"
+//#include "ext/equations-parser/parser/mpDefines.h"
 
 #include <flutter_linux/flutter_linux.h>
 #include <gtk/gtk.h>
 #include <sys/utsname.h>
 
 #include <cstring>
+#include <string>
+#include <iostream>
+using namespace std;
+using namespace mup;
 
 #define PARSEC_LINUX_PLUGIN(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj), parsec_linux_plugin_get_type(), \
@@ -15,6 +23,35 @@ struct _ParsecLinuxPlugin {
 };
 
 G_DEFINE_TYPE(ParsecLinuxPlugin, parsec_linux_plugin, g_object_get_type())
+
+Value Calc(string input) {
+    ParserX parser(pckALL_NON_COMPLEX);
+
+    Value ans;
+    parser.DefineVar(_T("ans"), Variable(&ans));
+
+    try
+    {
+        parser.SetExpr(input);
+        ans = parser.Eval();
+
+        return ans;
+    }
+    catch(ParserError &e)
+    {
+        if (e.GetPos() != -1) {
+            string_type error = "Error: ";
+            error.append(e.GetMsg());
+            return error;
+        }
+    }
+    catch(std::runtime_error &)
+    {
+        string_type error = "Error: Runtime error";
+        return error;
+    }
+    return ans;
+}
 
 // Called when a method call is received from Flutter.
 static void parsec_linux_plugin_handle_method_call(
@@ -27,7 +64,9 @@ static void parsec_linux_plugin_handle_method_call(
   if (strcmp(method, "nativeEval") == 0) {
     struct utsname uname_data = {};
     uname(&uname_data);
-    g_autofree gchar *version = g_strdup_printf("Linux %s", uname_data.version);
+    //g_autofree gchar *version = g_strdup_printf("Linux %s", uname_data.version);
+    Value ans = Calc("5 * 5");
+    g_autofree gchar *version = g_strdup_printf("Linux %s", ans.AsString().c_str());
     g_autoptr(FlValue) result = fl_value_new_string(version);
     response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
   } else {
