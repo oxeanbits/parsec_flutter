@@ -24,6 +24,26 @@ struct _ParsecLinuxPlugin {
 
 G_DEFINE_TYPE(ParsecLinuxPlugin, parsec_linux_plugin, g_object_get_type())
 
+void replaceAll(std::string& source, const std::string& from, const std::string& to) {
+    std::string newString;
+    newString.reserve(source.length());  // avoids a few memory allocations
+
+    std::string::size_type lastPos = 0;
+    std::string::size_type findPos;
+
+    while(std::string::npos != (findPos = source.find(from, lastPos)))
+    {
+        newString.append(source, lastPos, findPos - lastPos);
+        newString += to;
+        lastPos = findPos + from.length();
+    }
+
+    // Care for the rest after last occurrence
+    newString += source.substr(lastPos);
+
+    source.swap(newString);
+}
+
 Value Calc(string input) {
     ParserX parser(pckALL_NON_COMPLEX);
 
@@ -53,6 +73,46 @@ Value Calc(string input) {
     return ans;
 }
 
+string CalcJson(string input) {
+    ParserX parser(pckALL_NON_COMPLEX);
+
+    Value ans;
+    parser.DefineVar(_T("ans"), Variable(&ans));
+
+    stringstream_type ss;
+
+    ss << _T("{");
+
+    try
+    {
+        parser.SetExpr(input);
+        ans = parser.Eval();
+
+        std::string ansString = ans.AsString();
+
+        replaceAll(ansString, "\"", "\\\"");
+
+        ss << _T("\"val\": \"") << ansString << _T("\"");
+        ss << _T(",\"type\": \"") << ans.GetType() << _T("\"");
+    }
+    catch(ParserError &e)
+    {
+        if (e.GetPos() != -1) {
+            string_type error = e.GetMsg();
+            ss << _T("\"error\": \"") << error << _T("\"");
+        }
+    }
+    catch(std::runtime_error &)
+    {
+        string_type error = "Error: Runtime error";
+        ss << _T("\"error\": \"") << error << _T("\"");
+    }
+
+    ss << _T("}");
+
+    return ss.str();
+}
+
 // Called when a method call is received from Flutter.
 static void parsec_linux_plugin_handle_method_call(
     ParsecLinuxPlugin* self,
@@ -65,8 +125,8 @@ static void parsec_linux_plugin_handle_method_call(
     struct utsname uname_data = {};
     uname(&uname_data);
     //g_autofree gchar *version = g_strdup_printf("Linux %s", uname_data.version);
-    Value ans = Calc("5 * 5");
-    g_autofree gchar *version = g_strdup_printf("Linux %s", ans.AsString().c_str());
+    string ans = CalcJson("5 * 5");
+    g_autofree gchar *version = g_strdup_printf("Linux %s", ans.c_str());
     g_autoptr(FlValue) result = fl_value_new_string(version);
     response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
   } else {
