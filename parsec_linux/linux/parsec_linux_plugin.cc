@@ -122,12 +122,29 @@ static void parsec_linux_plugin_handle_method_call(
   const gchar* method = fl_method_call_get_name(method_call);
 
   if (strcmp(method, "nativeEval") == 0) {
-    struct utsname uname_data = {};
-    uname(&uname_data);
-    //g_autofree gchar *version = g_strdup_printf("Linux %s", uname_data.version);
-    string ans = CalcJson("5 * 5");
-    g_autofree gchar *version = g_strdup_printf("Linux %s", ans.c_str());
-    g_autoptr(FlValue) result = fl_value_new_string(version);
+    // Get Dart arguments
+    FlValue* args = fl_method_call_get_args(method_call);
+    // Fetch string value named "name"
+    FlValue *text_value = fl_value_lookup_string(args, "equation");
+
+    // Check if returned value is either null or string
+    if (text_value == nullptr || fl_value_get_type(text_value) != FL_VALUE_TYPE_STRING) {
+      // Return error
+      g_autoptr(FlMethodResponse) response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
+
+      // Create error, in this case null
+      g_autoptr(GError) error = nullptr;
+
+      // Send response back to dart
+      fl_method_call_respond(method_call, response, &error);
+      return;
+    }
+
+    string formula = fl_value_get_string(text_value);
+    string ans = CalcJson(formula);
+
+    g_autofree gchar *answer = g_strdup_printf("Linux %s", ans.c_str());
+    g_autoptr(FlValue) result = fl_value_new_string(answer);
     response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
   } else {
     response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
