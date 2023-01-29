@@ -6,7 +6,7 @@ The multi-platform `parsec` plugin for Flutter to calculate math equations using
 
 | Android | iOS | Windows | Linux | MacOS | Web |
 | :-----: | :-: | :-----: | :---: | :---: | :-: |
-|   ✔️    | ❌️ |   ❌️   |  ❌️  |  ❌️  | ❌️ |
+|   ✔️    | ❌️ |   ❌️   |  ✔️  |  ❌️  | ❌️ |
 
 ## Usage
 
