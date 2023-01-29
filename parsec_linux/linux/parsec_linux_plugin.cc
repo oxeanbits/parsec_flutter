@@ -146,7 +146,7 @@ static void parsec_linux_plugin_handle_native_eval(FlMethodCall* method_call) {
     string formula = fl_value_get_string(text_value);
     string ans = CalcJson(formula);
 
-    g_autofree gchar *answer = g_strdup_printf("Linux %s", ans.c_str());
+    g_autofree gchar *answer = g_strdup_printf("%s", ans.c_str());
     g_autoptr(FlValue) result = fl_value_new_string(answer);
     g_autoptr(FlMethodResponse) response = FL_METHOD_RESPONSE(fl_method_success_response_new(result));
     fl_method_call_respond(method_call, response, nullptr);
