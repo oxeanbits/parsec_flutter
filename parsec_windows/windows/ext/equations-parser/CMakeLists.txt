@@ -111,6 +111,15 @@ install(
 )
 
 ########################################################################
+# Example application
+########################################################################
+option(BUILD_EXAMPLES "enable building example applications" ON)
+if(BUILD_EXAMPLES)
+    add_executable(example sample/example.cpp sample/timer.cpp)
+    target_link_libraries(example muparserx)
+endif(BUILD_EXAMPLES)
+
+########################################################################
 # Print summary
 ########################################################################
 message(STATUS "Building muparserx version: ${MUPARSERX_VERSION}")
