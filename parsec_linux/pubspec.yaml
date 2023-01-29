@@ -1,6 +1,6 @@
 name: parsec_linux
 description: Linux implementation of the parsec plugin.
-version: 0.0.1
+version: 0.1.0
 homepage:
 publish_to: none
 

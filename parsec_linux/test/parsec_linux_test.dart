@@ -9,7 +9,7 @@ class MockParsecLinuxPlatform
     implements ParsecLinuxPlatform {
 
   @override
-  Future<String?> getPlatformVersion() => Future.value('42');
+  Future<String?> nativeEval() => Future.value('42');
 }
 
 void main() {
@@ -19,11 +19,11 @@ void main() {
     expect(initialPlatform, isInstanceOf<MethodChannelParsecLinux>());
   });
 
-  test('getPlatformVersion', () async {
+  test('nativeEval', () async {
     ParsecLinux parsecLinuxPlugin = ParsecLinux();
     MockParsecLinuxPlatform fakePlatform = MockParsecLinuxPlatform();
     ParsecLinuxPlatform.instance = fakePlatform;
 
-    expect(await parsecLinuxPlugin.getPlatformVersion(), '42');
+    expect(await parsecLinuxPlugin.nativeEval('4 * 10 + 2'), '42');
   });
 }

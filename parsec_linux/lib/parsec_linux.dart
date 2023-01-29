@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:parsec_platform_interface/parsec_platform_interface.dart';
+import 'package:parsec_platform_interface/parsec_eval_exception.dart';
 
 const MethodChannel _channel = MethodChannel('parsec_linux');
 
@@ -19,6 +20,11 @@ class ParsecLinux extends ParsecPlatform {
     var jsonData = jsonDecode(jsonString);
     var val = jsonData['val'];
     var type = jsonData['type'];
+    var error = jsonData['error'];
+
+    if (error != null) {
+      throw new ParsecEvalException(error);
+    }
 
     switch(type) {
       case 'i':
