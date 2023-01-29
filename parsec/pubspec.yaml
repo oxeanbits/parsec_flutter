@@ -17,6 +17,8 @@ dependencies:
     path: ../parsec_android/
   parsec_linux:
     path: ../parsec_linux/
+  parsec_windows:
+    path: ../parsec_windows/
 
 dev_dependencies:
   flutter_test:
@@ -30,3 +32,5 @@ flutter:
         default_package: parsec_android
       linux:
         default_package: parsec_linux
+      windows:
+        default_package: parsec_windows
