@@ -10,7 +10,6 @@ using namespace std;
 using namespace mup;
 using namespace EquationsParser;
 
-
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_oxeanbits_parsec_1android_ParsecAndroidPlugin_nativeEval(JNIEnv *env, jobject /* this */, jstring input) {
     const char *inputChars = env->GetStringUTFChars(input, NULL);
