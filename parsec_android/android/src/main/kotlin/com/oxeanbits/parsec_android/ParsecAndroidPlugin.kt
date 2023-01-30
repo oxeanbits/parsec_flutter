@@ -36,8 +36,15 @@ class ParsecAndroidPlugin: FlutterPlugin, MethodCallHandler {
   }
 
   private fun nativeEval(result: Result, equation: String) {
-    val p = Parsec();
-    val parsecResult = p.evalValue(equation).getValue()
+    val parsecResult = nativeEvalJson(equation)
     result.success(parsecResult)
+  }
+
+  private external fun nativeEvalJson(formula: String): String
+
+  companion object {
+    init {
+        System.loadLibrary("parsec-lib")
+    }
   }
 }

@@ -1,5 +1,6 @@
+import 'dart:convert';
+import 'package:parsec_platform_interface/parsec_eval_exception.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-
 import 'method_channel_parsec.dart';
 
 abstract class ParsecPlatform extends PlatformInterface {
@@ -25,5 +26,27 @@ abstract class ParsecPlatform extends PlatformInterface {
 
   Future<dynamic> nativeEval(String equation) {
     throw UnimplementedError('nativeEval() has not been implemented.');
+  }
+
+  dynamic parseNativeEvalResult(String jsonString) {
+    var jsonData = jsonDecode(jsonString);
+    var val = jsonData['val'];
+    var type = jsonData['type'];
+    var error = jsonData['error'];
+
+    if (error != null) {
+      throw ParsecEvalException(error);
+    }
+
+    switch (type) {
+      case 'i':
+        return int.parse(val);
+      case 'f':
+        return double.parse(val);
+      case 'b':
+        return val == 'true';
+      default:
+        return val;
+    }
   }
 }
