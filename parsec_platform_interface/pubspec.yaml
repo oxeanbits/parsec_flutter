@@ -1,6 +1,6 @@
 name: parsec_platform_interface
 description: A common platform interface for the parsec plugin.
-version: 0.1.0
+version: 0.1.1
 repository: https://github.com/oxeanbits/parsec_flutter/tree/main/parsec_platform_interface
 
 environment:

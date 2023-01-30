@@ -12,8 +12,8 @@ class ParsecLinux extends ParsecPlatform {
 
   @override
   Future<dynamic> nativeEval(String equation) {
-    return _channel.invokeMethod('nativeEval', {'equation': equation})
-        .then((result) => parseNativeEvalResult(result));
+    return _channel.invokeMethod('nativeEval', {'equation': equation}).then(
+        (result) => parseNativeEvalResult(result));
   }
 
   dynamic parseNativeEvalResult(String jsonString) {
@@ -23,10 +23,10 @@ class ParsecLinux extends ParsecPlatform {
     var error = jsonData['error'];
 
     if (error != null) {
-      throw new ParsecEvalException(error);
+      throw ParsecEvalException(error);
     }
 
-    switch(type) {
+    switch (type) {
       case 'i':
         return int.parse(val);
       case 'f':
