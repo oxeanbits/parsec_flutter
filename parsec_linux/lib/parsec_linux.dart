@@ -23,7 +23,7 @@ class ParsecLinux extends ParsecPlatform {
     var error = jsonData['error'];
 
     if (error != null) {
-      throw new ParsecEvalException(error);
+      throw ParsecEvalException(error);
     }
 
     switch(type) {
