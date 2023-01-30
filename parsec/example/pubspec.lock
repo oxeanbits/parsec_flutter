@@ -109,6 +109,13 @@ packages:
       relative: true
     source: path
     version: "0.1.0"
+  parsec_linux:
+    dependency: transitive
+    description:
+      path: "../../parsec_linux"
+      relative: true
+    source: path
+    version: "0.1.0"
   parsec_platform_interface:
     dependency: transitive
     description:

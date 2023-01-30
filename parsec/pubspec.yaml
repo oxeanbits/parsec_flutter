@@ -2,7 +2,6 @@ name: parsec
 description: Multi-platform `parsec` plugin for Flutter to calculate math equations using C++ library. Supports android.
 version: 0.1.0
 repository: https://github.com/oxeanbits/parsec_flutter/tree/main/parsec
-publish_to: none
 
 environment:
   sdk: ">=2.18.5 <3.0.0"
@@ -15,6 +14,8 @@ dependencies:
     path: ../parsec_platform_interface/
   parsec_android:
     path: ../parsec_android/
+  parsec_linux:
+    path: ../parsec_linux/
 
 dev_dependencies:
   flutter_test:
@@ -26,3 +27,5 @@ flutter:
     platforms:
       android:
         default_package: parsec_android
+      linux:
+        default_package: parsec_linux
