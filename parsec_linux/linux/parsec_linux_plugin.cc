@@ -1,6 +1,4 @@
 #include "include/parsec_linux/parsec_linux_plugin.h"
-#include "mpParser.h"
-#include "mpDefines.h"
 
 #include <flutter_linux/flutter_linux.h>
 #include <gtk/gtk.h>
@@ -12,7 +10,6 @@
 #include "equationsParser.h"
 
 using namespace std;
-using namespace mup;
 using namespace EquationsParser;
 
 #define PARSEC_LINUX_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), parsec_linux_plugin_get_type(), \

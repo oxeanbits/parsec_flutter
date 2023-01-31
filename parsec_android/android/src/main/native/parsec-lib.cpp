@@ -2,12 +2,9 @@
 #include <string>
 #include <iostream>
 #include <cmath>
-#include "mpParser.h"
-#include "mpDefines.h"
 #include "equationsParser.h"
 
 using namespace std;
-using namespace mup;
 using namespace EquationsParser;
 
 extern "C" JNIEXPORT jstring JNICALL

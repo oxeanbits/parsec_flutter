@@ -125,7 +125,7 @@ message(STATUS "Using install prefix: ${CMAKE_INSTALL_PREFIX}")
 
 add_library( parsec-lib
              SHARED
-             src/main/kotlin/com/oxeanbits/parsec_android/parsec-lib.cpp )
+             src/main/native/parsec-lib.cpp )
 
 find_library( log-lib
               log )

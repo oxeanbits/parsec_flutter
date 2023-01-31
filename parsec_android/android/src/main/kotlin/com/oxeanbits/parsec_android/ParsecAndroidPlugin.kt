@@ -25,7 +25,8 @@ class ParsecAndroidPlugin: FlutterPlugin, MethodCallHandler {
     when (call.method) {
       "nativeEval" -> {
         val equation = call.argument<String>("equation") ?: return
-        nativeEval(result, equation)
+        val parsecResult = nativeEvalJson(equation)
+        result.success(parsecResult)
       }
       else -> result.notImplemented()
     }
@@ -33,11 +34,6 @@ class ParsecAndroidPlugin: FlutterPlugin, MethodCallHandler {
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
     channel.setMethodCallHandler(null)
-  }
-
-  private fun nativeEval(result: Result, equation: String) {
-    val parsecResult = nativeEvalJson(equation)
-    result.success(parsecResult)
   }
 
   private external fun nativeEvalJson(formula: String): String
