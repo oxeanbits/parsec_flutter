@@ -10,8 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  parsec_platform_interface:
-    path: ../parsec_platform_interface/
+  parsec_platform_interface: ^0.1.1
 
 dev_dependencies:
   flutter_test:
