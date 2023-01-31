@@ -1,6 +1,6 @@
 ## 0.1.1
 
-- Create a `ParsecEvalException`.
+- Create a `ParsecEvalException` and a result parser.
 
 ## 0.1.0
 
