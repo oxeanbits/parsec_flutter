@@ -105,16 +105,16 @@ packages:
   parsec_android:
     dependency: transitive
     description:
-      path: "../../parsec_android"
-      relative: true
-    source: path
+      name: parsec_android
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.1.0"
   parsec_linux:
     dependency: transitive
     description:
-      path: "../../parsec_linux"
-      relative: true
-    source: path
+      name: parsec_linux
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.1.0"
   parsec_platform_interface:
     dependency: transitive
