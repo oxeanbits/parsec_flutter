@@ -10,8 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  parsec_platform_interface:
-    path: ../parsec_platform_interface/
+  parsec_platform_interface: ^0.1.1
   parsec_android:
     path: ../parsec_android/
   parsec_linux:
