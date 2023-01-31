@@ -1,4 +1,4 @@
-# parsec [![oxeanbits.com](https://img.shields.io/badge/maintained%20with-oxeanbits-007fff.svg)](https://oxeanbits.com)  [![pub package](https://img.shields.io/pub/v/parsec_platform_interface.svg)](https://pub.dev/packages/parsec_platform_interface) 
+# parsec [![package publisher](https://img.shields.io/pub/publisher/parsec_platform_interface.svg)](https://pub.dev/packages/parsec_platform_interface/publisher) [![pub package](https://img.shields.io/pub/v/parsec_platform_interface.svg)](https://pub.dev/packages/parsec_platform_interface)
 
 The multi-platform `parsec` plugin for Flutter to calculate math equations using C++ library.
 
