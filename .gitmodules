@@ -7,3 +7,4 @@
 [submodule "parsec_windows/windows/ext/equations-parser"]
 	path = parsec_windows/windows/ext/equations-parser
 	url = https://github.com/niltonvasques/equations-parser
+	branch = windows-version
