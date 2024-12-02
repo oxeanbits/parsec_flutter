@@ -4,3 +4,6 @@
 [submodule "parsec_linux/linux/ext/equations-parser"]
 	path = parsec_linux/linux/ext/equations-parser
 	url = https://github.com/niltonvasques/equations-parser
+[submodule "parsec_windows/windows/ext/equations-parser"]
+	path = parsec_windows/windows/ext/equations-parser
+	url = https://github.com/niltonvasques/equations-parser
