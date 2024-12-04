@@ -6,5 +6,5 @@
 	url = https://github.com/niltonvasques/equations-parser
 [submodule "parsec_windows/windows/ext/equations-parser"]
 	path = parsec_windows/windows/ext/equations-parser
-	url = git@github.com:oxeanbits/equations-parser.git
+	url = https://github.com/niltonvasques/equations-parser
 	branch = windows-version
