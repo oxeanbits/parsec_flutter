@@ -121,23 +121,23 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.3.0"
+    version: "0.3.1"
   parsec_android:
     dependency: transitive
     description:
       name: parsec_android
-      sha256: "8f90aa766095d2b1f0acd158e2bb7367f7fd1c53088868fdcbf2b6e3812455a3"
+      sha256: "12076fe043d31bf73e3fc511b132d18fb0ea35acc6ce53564f4bb68ef707ee51"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.2"
   parsec_linux:
     dependency: transitive
     description:
       name: parsec_linux
-      sha256: "4deea9beeb47b2aec6431bed64572acf3f417916532b1d52e0057a22205353ee"
+      sha256: "0f15d32dca7b6d9e64c1c6bcfee018863c1a68edf189e51eeb46b0ad7b535a2d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.1"
   parsec_platform_interface:
     dependency: transitive
     description:
