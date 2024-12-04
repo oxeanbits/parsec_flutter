@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   parsec_platform_interface: ^0.1.1
-  parsec_android: ^0.3.1
+  parsec_android: ^0.3.2
   parsec_linux: ^0.3.1
   parsec_windows: ^0.1.0
 
