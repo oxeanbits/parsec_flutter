@@ -4,8 +4,8 @@ version: 0.1.0
 repository: https://github.com/oxeanbits/parsec_flutter/tree/main/parsec_windows
 
 environment:
-  sdk: ">=2.18.6 <3.0.0"
-  flutter: ">=2.5.0"
+  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.19.0"
 
 dependencies:
   flutter:
