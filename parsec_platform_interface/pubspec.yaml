@@ -1,6 +1,6 @@
 name: parsec_platform_interface
 description: A common platform interface for the parsec plugin.
-version: 0.1.1
+version: 0.2.0
 repository: https://github.com/oxeanbits/parsec_flutter/tree/main/parsec_platform_interface
 
 environment:
@@ -10,9 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  plugin_platform_interface: ^2.1.3
+  plugin_platform_interface: ^2.1.8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
+  flutter_lints: ^4.0.0
