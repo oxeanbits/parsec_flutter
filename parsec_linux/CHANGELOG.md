@@ -1,3 +1,8 @@
+## 0.4.0
+
+- Upgrade minimum Dart SDK version to 3.3.0.
+- Upgrade minimum Flutter version to 3.19.0.
+
 ## 0.3.1
 
 - Update parsec with new functions.
