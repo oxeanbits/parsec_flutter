@@ -1,6 +1,6 @@
 name: parsec_linux
 description: Linux implementation of the parsec plugin.
-version: 0.3.1
+version: 0.4.0
 homepage: https://github.com/oxeanbits/parsec_flutter/tree/main/parsec_linux
 repository: https://github.com/oxeanbits/parsec_flutter/tree/main/parsec_linux
 
@@ -11,12 +11,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  parsec_platform_interface: ^0.1.1
+  parsec_platform_interface: ^0.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
