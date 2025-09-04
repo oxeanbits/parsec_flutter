@@ -1,0 +1,3 @@
+# Ignore all files within any directory named "wasm"
+**/wasm/**
+
