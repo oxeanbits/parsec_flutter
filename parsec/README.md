@@ -8,9 +8,46 @@ The multi-platform `parsec` plugin for Flutter to calculate math equations using
 | :-----: | :-: | :-----: | :---: | :---: | :-: |
 |   ✔️    | ❌️ |   ✔️    |  ✔️   |  ❌️  | ✔️  |
 
-## Usage
+## Installation
 
-To use this plugin, add `parsec` as a [dependency in your pubspec.yaml file](https://flutter.dev/platform-plugins/).
+Add `parsec` as a dependency in your `pubspec.yaml` file:
+
+```yaml
+dependencies:
+  parsec: ^0.3.1  # Use latest version
+```
+
+Then run:
+
+```bash
+flutter pub get
+```
+
+### Web Platform Setup (Additional Step)
+
+For web platform support, you need to set up WebAssembly assets:
+
+```bash
+# Clone with submodules (if not already done)
+git clone --recursive <your-repo-url>
+
+# Or initialize submodules in existing repo
+git submodule update --init --recursive
+
+# Run setup script to prepare web assets
+./setup_web_assets.sh
+```
+
+## Requirements
+
+| Platform | Requirements |
+|----------|-------------|
+| **Android** | Android SDK, NDK |
+| **Linux** | GCC/Clang compiler |
+| **Windows** | Visual Studio Build Tools |
+| **Web** | Modern browser with WebAssembly support |
+
+## Usage
 
 ### Example
 
@@ -175,6 +212,15 @@ This copies the necessary WebAssembly files from the `parsec_web_lib` submodule 
 - **Android/Linux/Windows**: Uses Method Channels to communicate with native C++ implementations
 - **iOS/macOS**: Not yet supported
 
+## Performance
+
+| Platform | Implementation | Typical Performance | Network Required |
+|----------|---------------|-------------------|------------------|
+| **Web** | WebAssembly | ~1-10ms | No (offline) |
+| **Android** | Method Channels + C++ | ~5-20ms | No (offline) |
+| **Linux** | Method Channels + C++ | ~5-20ms | No (offline) |
+| **Windows** | Method Channels + C++ | ~5-20ms | No (offline) |
+
 ### Expected Behavior
 
 The same equation should produce identical results across all supported platforms:
@@ -183,3 +229,79 @@ The same equation should produce identical results across all supported platform
 final parsec = Parsec();
 final result = await parsec.eval('2 + 3 * sin(pi/2)'); // Should return 5.0 on all platforms
 ```
+
+## Troubleshooting
+
+### Web Platform Issues
+
+#### "parsec-web JavaScript library not found"
+```bash
+# Ensure submodules are initialized
+git submodule update --init --recursive
+
+# Run the web setup script
+./setup_web_assets.sh
+
+# Verify assets were copied
+ls parsec/example/web/assets/parsec-web/
+```
+
+#### WebAssembly module fails to load
+- Ensure your browser supports WebAssembly (all modern browsers do)
+- Check browser console for detailed error messages
+- Try hard refresh (Ctrl+Shift+R) to clear cache
+
+### Native Platform Issues
+
+#### Build errors on Android
+```bash
+# Ensure NDK is installed
+flutter doctor
+
+# Clean and rebuild
+flutter clean
+flutter pub get
+flutter build android
+```
+
+#### Build errors on Linux/Windows
+```bash
+# Ensure proper build tools are installed
+flutter doctor
+
+# Verify platform is enabled
+flutter create --platforms=linux,windows .
+```
+
+### General Issues
+
+#### "No such file or directory" errors
+- Ensure you're running commands from the correct directory
+- Check that all required files exist in the repository
+
+#### Tests failing
+```bash
+# Run validation script to check setup
+./validate_integration.sh
+
+# Check individual components
+flutter test parsec/
+flutter test parsec_android/
+flutter test parsec_linux/
+flutter test parsec_windows/
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests: `flutter test`
+5. Run validation: `./validate_integration.sh`
+6. Commit your changes (`git commit -m 'Add amazing feature'`)
+7. Push to the branch (`git push origin feature/amazing-feature`)
+8. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
