@@ -1,12 +1,12 @@
 # parsec [![package publisher](https://img.shields.io/pub/publisher/parsec.svg)](https://pub.dev/packages/parsec/publisher) [![pub package](https://img.shields.io/pub/v/parsec.svg)](https://pub.dev/packages/parsec)
 
-The multi-platform `parsec` plugin for Flutter to calculate math equations using C++ library.
+The multi-platform `parsec` plugin for Flutter to calculate math equations using C++ library on native platforms and WebAssembly on web.
 
 ## Platform Support
 
 | Android | iOS | Windows | Linux | MacOS | Web |
 | :-----: | :-: | :-----: | :---: | :---: | :-: |
-|   ✔️    | ❌️ |   ✔️    |  ✔️   |  ❌️  | ❌️ |
+|   ✔️    | ❌️ |   ✔️    |  ✔️   |  ❌️  | ✔️  |
 
 ## Usage
 

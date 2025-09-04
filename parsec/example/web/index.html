@@ -18,7 +18,7 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Parsec Flutter Smart Load Balancer Demo">
+  <meta name="description" content="Parsec Flutter Demo">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -28,7 +28,7 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>Parsec Smart Load Balancer Demo</title>
+  <title>Parsec Demo</title>
   <link rel="manifest" href="manifest.json">
 
   <style>
@@ -69,9 +69,9 @@
   <!-- Loading indicator -->
   <div id="loading">
     <div class="spinner"></div>
-    <div>🚀 Loading Parsec Smart Load Balancer...</div>
+    <div>🚀 Loading Parsec...</div>
     <div style="font-size: 14px; margin-top: 10px; opacity: 0.8;">
-      Initializing WebAssembly for 100x performance boost
+      Initializing WebAssembly
     </div>
   </div>
 
@@ -90,7 +90,7 @@
       console.log('✅ Parsec WebAssembly library loaded successfully');
       window.parsecWebReady = true;
     } else {
-      console.warn('⚠️ Parsec WebAssembly library not found - falling back to backend routing');
+      console.warn('⚠️ Parsec WebAssembly library not found');
     }
   </script>
 

@@ -60,4 +60,4 @@ echo '   <script src="assets/parsec-web/wasm/equations_parser.js"></script>'
 echo ""
 echo "2. Run Flutter web: flutter run -d chrome"
 echo ""
-echo "🚀 WebAssembly should now be available for 100x performance boost!"
+echo "🚀 WebAssembly should now be available for web platform calculations!"
