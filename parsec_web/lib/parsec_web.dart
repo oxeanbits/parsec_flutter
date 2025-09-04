@@ -117,7 +117,8 @@ class ParsecWebPlugin extends ParsecPlatform {
   Future<void> _createAndInitializeParsecInstance() async {
     try {
       _parsecInstance = ParsecJS();
-      await _parsecInstance!.initialize().toDart;
+      // Use the equations-parser module built by parsec_web_lib (relative to the wrapper file)
+      await _parsecInstance!.initialize('../wasm/equations_parser.js').toDart;
     } catch (error) {
       throw Exception('Failed to initialize Parsec WebAssembly module: $error');
     }
@@ -141,8 +142,8 @@ To set it up:
 
 1. Run the setup script: ./setup_web_assets.sh
 2. Or manually check that web/index.html includes:
-   <script src="assets/parsec-web/js/equations_parser_wrapper.js"></script>
-   <script src="assets/parsec-web/wasm/math_functions.js"></script>
+   <script type="module" src="assets/parsec-web/js/equations_parser_wrapper.js"></script>
+   <!-- The wrapper dynamically imports the WASM module; no direct tag needed. -->
 
 Repository: https://github.com/oxeanbits/parsec-web (included as submodule)
 ''';
@@ -160,7 +161,7 @@ extension type ParsecJS._(JSObject _) implements JSObject {
   
   /// Initialize the WebAssembly module
   /// Returns a Promise that resolves when the module is ready
-  external JSPromise<JSAny?> initialize();
+  external JSPromise<JSAny?> initialize(String wasmPath);
   
   /// Evaluate a mathematical equation
   /// Returns the result directly (number, string, or boolean)

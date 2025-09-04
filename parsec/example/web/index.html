@@ -76,10 +76,9 @@
   </div>
 
   <!-- Parsec WebAssembly Integration -->
-  <!-- Load parsec-web JavaScript wrapper -->
-  <script src="assets/parsec-web/js/equations_parser_wrapper.js"></script>
-  <!-- Load WebAssembly module (embedded in math_functions.js) -->
-  <script src="assets/parsec-web/wasm/math_functions.js"></script>
+  <!-- Load parsec-web JavaScript wrapper as ES module (required due to export syntax) -->
+  <script type="module" src="assets/parsec-web/js/equations_parser_wrapper.js"></script>
+  <!-- Note: The wrapper dynamically imports the WASM module during initialization. -->
 
   <script>
     // Initialize parsec-web before Flutter app starts
