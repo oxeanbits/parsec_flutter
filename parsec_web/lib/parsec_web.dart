@@ -81,26 +81,31 @@ Repository: https://github.com/oxeanbits/parsec-web (included as submodule)
       }
 
       // Call the eval method and get the result
-      final result = _parsecInstance!.eval(equation);
+      final jsResult = _parsecInstance!.eval(equation);
       
-      // The parsec-web library returns the value directly (number, string, or boolean)
-      // We need to simulate the JSON format that the platform interface expects
+      // Convert JSAny to Dart types and create JSON format
       final String jsonResult;
       
-      if (result is String) {
-        jsonResult = '{"val": "$result", "type": "s", "error": null}';
-      } else if (result is bool) {
-        jsonResult = '{"val": "${result.toString()}", "type": "b", "error": null}';
-      } else if (result is num) {
-        // Determine if it's an integer or float
-        if (result is int || (result is double && result == result.toInt())) {
-          jsonResult = '{"val": "${result.toInt()}", "type": "i", "error": null}';
+      // Convert JavaScript result to string first for safe handling
+      final String resultStr = jsResult.toString();
+      
+      // Try to determine the type based on the result
+      if (resultStr == 'true' || resultStr == 'false') {
+        // Boolean result
+        jsonResult = '{"val": "$resultStr", "type": "b", "error": null}';
+      } else if (double.tryParse(resultStr) != null) {
+        // Numeric result
+        final num parsedNum = double.parse(resultStr);
+        if (parsedNum == parsedNum.toInt()) {
+          // Integer
+          jsonResult = '{"val": "${parsedNum.toInt()}", "type": "i", "error": null}';
         } else {
-          jsonResult = '{"val": "$result", "type": "f", "error": null}';
+          // Float
+          jsonResult = '{"val": "$parsedNum", "type": "f", "error": null}';
         }
       } else {
-        // Fallback for any other type
-        jsonResult = '{"val": "$result", "type": "s", "error": null}';
+        // String result (default)
+        jsonResult = '{"val": "$resultStr", "type": "s", "error": null}';
       }
 
       // Parse the result using the platform interface method
