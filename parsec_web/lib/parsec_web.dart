@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:js_interop';
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
@@ -55,14 +56,23 @@ class ParsecWebPlugin extends ParsecPlatform {
     final String resultStr = jsResult.toString();
     
     if (_isBooleanResult(resultStr)) {
-      return '{"val": "$resultStr", "type": "b", "error": null}';
+      return _createJsonResult(resultStr, 'b');
     }
     
     if (_isNumericResult(resultStr)) {
       return _formatNumericResult(resultStr);
     }
     
-    return '{"val": "$resultStr", "type": "s", "error": null}';
+    return _createJsonResult(resultStr, 's');
+  }
+
+  String _createJsonResult(String value, String type) {
+    final Map<String, dynamic> result = {
+      'val': value,
+      'type': type,
+      'error': null,
+    };
+    return jsonEncode(result);
   }
 
   bool _isBooleanResult(String result) => result == 'true' || result == 'false';
@@ -73,13 +83,20 @@ class ParsecWebPlugin extends ParsecPlatform {
     final num parsedNum = double.parse(resultStr);
     final bool isInteger = parsedNum == parsedNum.toInt();
     
-    return isInteger 
-        ? '{"val": "${parsedNum.toInt()}", "type": "i", "error": null}'
-        : '{"val": "$parsedNum", "type": "f", "error": null}';
+    if (isInteger) {
+      return _createJsonResult(parsedNum.toInt().toString(), 'i');
+    } else {
+      return _createJsonResult(parsedNum.toString(), 'f');
+    }
   }
 
   dynamic _handleEvaluationError(Object error) {
-    final errorJsonResult = '{"val": null, "type": null, "error": "$error"}';
+    final Map<String, dynamic> result = {
+      'val': null,
+      'type': null,
+      'error': error.toString(),
+    };
+    final errorJsonResult = jsonEncode(result);
     return parseNativeEvalResult(errorJsonResult);
   }
 
