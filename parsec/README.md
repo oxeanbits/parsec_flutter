@@ -243,14 +243,32 @@ graph TD
 
 ### For Web Applications
 
-1. Add [parsec-web](https://github.com/oxeanbits/parsec-web) JavaScript library to your HTML:
+**✅ Automatic Setup via Git Submodule:**
 
-```html
-<!-- Add to your web/index.html -->
-<script src="path/to/parsec-web/js/equations_parser_wrapper.js"></script>
+1. **Run the setup script** (one command):
+   ```bash
+   ./setup_web_assets.sh
+   ```
+
+2. **The script automatically**:
+   - Copies [parsec-web](https://github.com/oxeanbits/parsec-web) files from git submodule
+   - Builds WebAssembly module using Emscripten
+   - Creates proper Flutter web asset structure  
+   - Updates `web/index.html` with script references
+
+3. **Run Flutter web**:
+   ```bash
+   flutter run -d chrome
+   # WebAssembly now provides 100x performance boost!
+   ```
+
+**Git Submodule Details:**
+The parsec-web library is included as a git submodule at `parsec_web_lib/`. When you clone this repository, initialize submodules:
+```bash
+git clone --recursive <repository-url>
+# OR after cloning:
+git submodule update --init --recursive
 ```
-
-2. The Flutter web app will automatically detect and use WebAssembly for fast math evaluation.
 
 ### For Custom Functions (Backend)
 

@@ -27,18 +27,46 @@ class ParsecWebPlugin extends ParsecPlatform {
     }
 
     try {
+      // Check if the parsec-web JavaScript library is available
+      if (!_isParseWebLibraryAvailable()) {
+        throw Exception('''
+ParsecWebError: parsec-web JavaScript library not found!
+
+The parsec-web library should be available as a git submodule.
+To set it up:
+
+1. Run the setup script: ./setup_web_assets.sh
+2. Or manually check that web/index.html includes:
+   <script src="assets/parsec-web/js/equations_parser_wrapper.js"></script>
+   <script src="assets/parsec-web/wasm/math_functions.js"></script>
+
+Repository: https://github.com/oxeanbits/parsec-web (included as submodule)
+        ''');
+      }
+
       // Create new Parsec instance from the global JavaScript context
       _parsecInstance = ParsecJS();
       
-      // Initialize the WebAssembly module
-      // The parsec-web library should be loaded in the HTML page
+      // Initialize the WebAssembly module  
+      // Note: The math_functions.js contains the embedded WASM module
       await _parsecInstance!.initialize().toDart;
       
       _isInitialized = true;
-      print('✅ Parsec WebAssembly module initialized successfully');
+      print('✅ Parsec WebAssembly module initialized successfully from submodule');
     } catch (error) {
       print('❌ Failed to initialize Parsec WebAssembly module: $error');
       rethrow;
+    }
+  }
+
+  /// Check if parsec-web JavaScript library is available in global context
+  bool _isParseWebLibraryAvailable() {
+    try {
+      // Try to access the global Parsec constructor from the submodule
+      final globalParsec = web.window['Parsec'];
+      return globalParsec != null;
+    } catch (e) {
+      return false;
     }
   }
 
