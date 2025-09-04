@@ -7,10 +7,9 @@ import 'package:web/web.dart' as web;
 
 /// Web implementation of the parsec plugin using WebAssembly
 /// 
-/// This implementation uses dart:js_interop to call the parsec-web JavaScript
-/// library that wraps the equations-parser WebAssembly module.
+/// Provides equation evaluation through the parsec-web JavaScript library
+/// that wraps the equations-parser WebAssembly module for optimal performance.
 class ParsecWebPlugin extends ParsecPlatform {
-  /// Constructs a ParsecWebPlugin
   ParsecWebPlugin();
 
   static void registerWith(Registrar registrar) {
@@ -20,16 +19,104 @@ class ParsecWebPlugin extends ParsecPlatform {
   ParsecJS? _parsecInstance;
   bool _isInitialized = false;
 
-  /// Initialize the parsec-web WebAssembly module
-  Future<void> _initializeParsec() async {
-    if (_isInitialized) {
-      return;
-    }
+  bool get isInitialized => _isInitialized;
 
+  @override
+  Future<dynamic> nativeEval(String equation) async {
+    _validateEquation(equation);
+    
     try {
-      // Check if the parsec-web JavaScript library is available
-      if (!_isParseWebLibraryAvailable()) {
-        throw Exception('''
+      await _ensureParsecInitialized();
+      final jsResult = _parsecInstance!.eval(equation);
+      final jsonResult = _formatJavaScriptResult(jsResult);
+      return parseNativeEvalResult(jsonResult);
+    } catch (error) {
+      return _handleEvaluationError(error);
+    }
+  }
+
+  void _validateEquation(String equation) {
+    if (equation.trim().isEmpty) {
+      throw ArgumentError.value(equation, 'equation', 'Equation cannot be empty');
+    }
+  }
+
+  Future<void> _ensureParsecInitialized() async {
+    if (!_isInitialized) {
+      await _initializeParsec();
+    }
+    
+    if (_parsecInstance == null) {
+      throw Exception('Parsec WebAssembly module failed to initialize');
+    }
+  }
+
+  String _formatJavaScriptResult(JSAny? jsResult) {
+    final String resultStr = jsResult.toString();
+    
+    if (_isBooleanResult(resultStr)) {
+      return '{"val": "$resultStr", "type": "b", "error": null}';
+    }
+    
+    if (_isNumericResult(resultStr)) {
+      return _formatNumericResult(resultStr);
+    }
+    
+    return '{"val": "$resultStr", "type": "s", "error": null}';
+  }
+
+  bool _isBooleanResult(String result) => result == 'true' || result == 'false';
+
+  bool _isNumericResult(String result) => double.tryParse(result) != null;
+
+  String _formatNumericResult(String resultStr) {
+    final num parsedNum = double.parse(resultStr);
+    final bool isInteger = parsedNum == parsedNum.toInt();
+    
+    return isInteger 
+        ? '{"val": "${parsedNum.toInt()}", "type": "i", "error": null}'
+        : '{"val": "$parsedNum", "type": "f", "error": null}';
+  }
+
+  dynamic _handleEvaluationError(Object error) {
+    final errorJsonResult = '{"val": null, "type": null, "error": "$error"}';
+    return parseNativeEvalResult(errorJsonResult);
+  }
+
+  Future<void> _initializeParsec() async {
+    if (_isInitialized) return;
+
+    _validateWebLibraryAvailability();
+    await _createAndInitializeParsecInstance();
+    _isInitialized = true;
+  }
+
+  void _validateWebLibraryAvailability() {
+    if (!_isParseWebLibraryAvailable()) {
+      throw Exception(_getLibraryNotFoundMessage());
+    }
+  }
+
+  Future<void> _createAndInitializeParsecInstance() async {
+    try {
+      _parsecInstance = ParsecJS();
+      await _parsecInstance!.initialize().toDart;
+    } catch (error) {
+      throw Exception('Failed to initialize Parsec WebAssembly module: $error');
+    }
+  }
+
+  bool _isParseWebLibraryAvailable() {
+    try {
+      final globalParsec = web.window['Parsec'];
+      return globalParsec != null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  String _getLibraryNotFoundMessage() {
+    return '''
 ParsecWebError: parsec-web JavaScript library not found!
 
 The parsec-web library should be available as a git submodule.
@@ -41,83 +128,7 @@ To set it up:
    <script src="assets/parsec-web/wasm/math_functions.js"></script>
 
 Repository: https://github.com/oxeanbits/parsec-web (included as submodule)
-        ''');
-      }
-
-      // Create new Parsec instance from the global JavaScript context
-      _parsecInstance = ParsecJS();
-      
-      // Initialize the WebAssembly module  
-      // Note: The math_functions.js contains the embedded WASM module
-      await _parsecInstance!.initialize().toDart;
-      
-      _isInitialized = true;
-      print('✅ Parsec WebAssembly module initialized successfully from submodule');
-    } catch (error) {
-      print('❌ Failed to initialize Parsec WebAssembly module: $error');
-      rethrow;
-    }
-  }
-
-  /// Check if parsec-web JavaScript library is available in global context
-  bool _isParseWebLibraryAvailable() {
-    try {
-      // Try to access the global Parsec constructor from the submodule
-      final globalParsec = web.window['Parsec'];
-      return globalParsec != null;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  @override
-  Future<dynamic> nativeEval(String equation) async {
-    try {
-      // Ensure the module is initialized
-      await _initializeParsec();
-
-      if (_parsecInstance == null) {
-        throw Exception('Parsec WebAssembly module not initialized');
-      }
-
-      // Call the eval method and get the result
-      final jsResult = _parsecInstance!.eval(equation);
-      
-      // Convert JSAny to Dart types and create JSON format
-      final String jsonResult;
-      
-      // Convert JavaScript result to string first for safe handling
-      final String resultStr = jsResult.toString();
-      
-      // Try to determine the type based on the result
-      if (resultStr == 'true' || resultStr == 'false') {
-        // Boolean result
-        jsonResult = '{"val": "$resultStr", "type": "b", "error": null}';
-      } else if (double.tryParse(resultStr) != null) {
-        // Numeric result
-        final num parsedNum = double.parse(resultStr);
-        if (parsedNum == parsedNum.toInt()) {
-          // Integer
-          jsonResult = '{"val": "${parsedNum.toInt()}", "type": "i", "error": null}';
-        } else {
-          // Float
-          jsonResult = '{"val": "$parsedNum", "type": "f", "error": null}';
-        }
-      } else {
-        // String result (default)
-        jsonResult = '{"val": "$resultStr", "type": "s", "error": null}';
-      }
-
-      // Parse the result using the platform interface method
-      return parseNativeEvalResult(jsonResult);
-      
-    } catch (error) {
-      print('❌ Error in parsec-web eval: $error');
-      
-      // Return error in the expected JSON format
-      final errorJsonResult = '{"val": null, "type": null, "error": "$error"}';
-      return parseNativeEvalResult(errorJsonResult);
-    }
+''';
   }
 }
 
