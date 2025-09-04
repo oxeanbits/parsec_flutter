@@ -104,3 +104,82 @@ parsec.eval('hoursdiff("2018-01-01", "2018-01-01")')             # result => 0
 - Array functions: **sizeof**, **eye**, **ones**, **zeros**
 - Date functions: **current_date**, **daysdiff**, **hoursdiff**
 - Extra functions: **default_value**
+
+## Testing
+
+### Running Automated Tests
+
+#### Main Package Tests
+```bash
+cd parsec
+flutter test
+```
+
+#### Platform-Specific Tests
+```bash
+# Android implementation
+cd parsec_android
+flutter test
+
+# Linux implementation  
+cd parsec_linux
+flutter test
+
+# Windows implementation
+cd parsec_windows
+flutter test
+```
+
+#### Integration Validation
+```bash
+# From repository root
+./validate_integration.sh
+```
+
+### Manual Testing
+
+#### Web Platform (WebAssembly)
+```bash
+cd parsec/example
+flutter run -d chrome
+```
+
+#### Native Platforms
+```bash
+cd parsec/example
+
+# Linux
+flutter run -d linux
+
+# Android (with device connected)
+flutter run -d android
+
+# Windows (on Windows machine)  
+flutter run -d windows
+```
+
+### Web Setup (First Time Only)
+
+If you're testing the web platform for the first time, ensure WebAssembly assets are set up:
+
+```bash
+# From repository root
+./setup_web_assets.sh
+```
+
+This copies the necessary WebAssembly files from the `parsec_web_lib` submodule to the Flutter web assets directory.
+
+### Platform-Specific Implementation
+
+- **Web**: Uses WebAssembly through the `parsec-web` JavaScript library for optimal performance
+- **Android/Linux/Windows**: Uses Method Channels to communicate with native C++ implementations
+- **iOS/macOS**: Not yet supported
+
+### Expected Behavior
+
+The same equation should produce identical results across all supported platforms:
+
+```dart
+final parsec = Parsec();
+final result = await parsec.eval('2 + 3 * sin(pi/2)'); // Should return 5.0 on all platforms
+```
