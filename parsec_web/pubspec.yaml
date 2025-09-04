@@ -1,0 +1,30 @@
+name: parsec_web
+description: Web implementation of the parsec plugin using WebAssembly via dart:js_interop.
+version: 0.1.0
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.19.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  js: ^0.7.1
+  web: ^1.0.0
+  parsec_platform_interface:
+    path: ../parsec_platform_interface
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.1
+
+flutter:
+  plugin:
+    implements: parsec
+    platforms:
+      web:
+        pluginClass: ParsecWebPlugin
+        fileName: parsec_web.dart
