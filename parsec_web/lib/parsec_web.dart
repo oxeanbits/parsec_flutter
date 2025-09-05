@@ -142,7 +142,7 @@ To set it up:
 
 1. Run the setup script: ./setup_web_assets.sh
 2. Or manually check that web/index.html includes:
-   <script type="module" src="assets/parsec-web/js/equations_parser_wrapper.js"></script>
+   <script type="module" src="packages/parsec_web/parsec-web/js/equations_parser_wrapper.js"></script>
    <!-- The wrapper dynamically imports the WASM module; no direct tag needed. -->
 
 Repository: https://github.com/oxeanbits/parsec-web (included as submodule)

@@ -55,7 +55,7 @@ echo "✅ Setup complete!"
 echo ""
 echo "📋 Next steps:"
 echo "1. Ensure parsec/example/web/index.html includes:"
-echo '   <script type="module" src="assets/parsec-web/js/equations_parser_wrapper.js"></script>'
+echo '   <script type="module" src="packages/parsec_web/parsec-web/js/equations_parser_wrapper.js"></script>'
 echo '   <!-- WASM is loaded dynamically by the wrapper (../wasm/equations_parser.js); no direct tag needed -->'
 echo ""
 echo "2. Run Flutter web: flutter run -d chrome"
