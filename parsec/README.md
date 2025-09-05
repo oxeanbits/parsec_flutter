@@ -273,12 +273,6 @@ flutter doctor
 flutter create --platforms=linux,windows .
 ```
 
-### General Issues
-
-#### "No such file or directory" errors
-- Ensure you're running commands from the correct directory
-- Check that all required files exist in the repository
-
 #### Tests failing
 ```bash
 # Run validation script to check setup
