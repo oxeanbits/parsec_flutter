@@ -25,16 +25,16 @@ flutter pub get
 
 ### Web Platform Setup (Additional Step)
 
-For web platform support, you need to set up WebAssembly assets:
+For web platform support, include the parsec-web wrapper JS in your app's `web/index.html`:
+
+```html
+<script type="module" src="packages/parsec_web/parsec-web/js/equations_parser_wrapper.js"></script>
+```
+
+The wrapper dynamically imports the WASM glue from `packages/parsec_web/parsec-web/wasm/equations_parser.js`.
+If the WASM glue is missing during local development, run:
 
 ```bash
-# Clone with submodules (if not already done)
-git clone --recursive <your-repo-url>
-
-# Or initialize submodules in existing repo
-git submodule update --init --recursive
-
-# Run setup script to prepare web assets
 ./setup_web_assets.sh
 ```
 
@@ -197,14 +197,13 @@ flutter run -d windows
 
 ### Web Setup (First Time Only)
 
-If you're testing the web platform for the first time, ensure WebAssembly assets are set up:
+If you're testing the web platform for the first time, ensure the WASM glue is present:
 
 ```bash
-# From repository root
 ./setup_web_assets.sh
 ```
 
-This copies the necessary WebAssembly files from the `parsec_web_lib` submodule to the Flutter web assets directory.
+This syncs the necessary WebAssembly files into the `parsec_web` package so they can be served from `packages/parsec_web/parsec-web/...`.
 
 ### Platform-Specific Implementation
 
@@ -236,14 +235,14 @@ final result = await parsec.eval('2 + 3 * sin(pi/2)'); // Should return 5.0 on a
 
 #### "parsec-web JavaScript library not found"
 ```bash
-# Ensure submodules are initialized
-git submodule update --init --recursive
+# Ensure your app's web/index.html includes the wrapper:
+# <script type="module" src="packages/parsec_web/parsec-web/js/equations_parser_wrapper.js"></script>
 
-# Run the web setup script
+# Run the web setup script to ensure WASM glue is present
 ./setup_web_assets.sh
 
-# Verify assets were copied
-ls parsec/example/web/assets/parsec-web/
+# Verify bundled assets
+ls parsec_web/lib/parsec-web/{js,wasm}/
 ```
 
 #### WebAssembly module fails to load

@@ -1,63 +1,54 @@
 #!/bin/bash
 
 # Setup script to make parsec-web available to Flutter web builds
-# This script copies the necessary files from the parsec_web_lib submodule
-# to the Flutter web assets
+# This script syncs the JS wrapper and WASM glue into the parsec_web package
+# so Flutter web builds can load them directly from:
+#   packages/parsec_web/parsec-web/js/equations_parser_wrapper.js
+#   packages/parsec_web/parsec-web/wasm/equations_parser.js
 
 set -e
 
-echo "🔧 Setting up parsec-web assets for Flutter web..."
-echo "================================================="
+echo "🔧 Setting up parsec-web assets inside parsec_web package..."
+echo "==========================================================="
 
-# Check if parsec_web_lib submodule exists
-if [ ! -d "parsec_web_lib" ]; then
-    echo "❌ Error: parsec_web_lib submodule not found!"
-    echo "Please run: git submodule add https://github.com/oxeanbits/parsec-web.git parsec_web_lib"
+# Create package asset directories
+mkdir -p parsec_web/lib/parsec-web/js/
+mkdir -p parsec_web/lib/parsec-web/wasm/
+
+echo "📁 Ensuring JavaScript wrapper exists in package..."
+if [ -f "parsec_web/lib/parsec-web/js/equations_parser_wrapper.js" ]; then
+  echo "✅ Wrapper present at parsec_web/lib/parsec-web/js/equations_parser_wrapper.js"
+else
+  echo "❌ Wrapper missing at parsec_web/lib/parsec-web/js/equations_parser_wrapper.js"
+  echo "   This file should be committed to the repository."
+  exit 1
+fi
+
+echo "📁 Ensuring WASM glue (equations_parser.js) is available..."
+if [ -n "$WASM_SOURCE" ]; then
+  if [ -f "$WASM_SOURCE" ]; then
+    cp "$WASM_SOURCE" parsec_web/lib/parsec-web/wasm/equations_parser.js
+    echo "✅ Copied from WASM_SOURCE to parsec_web/lib/parsec-web/wasm/equations_parser.js"
+  else
+    echo "❌ WASM_SOURCE path does not exist: $WASM_SOURCE"
     exit 1
+  fi
+elif [ -f "parsec_web/lib/parsec-web/wasm/equations_parser.js" ]; then
+  echo "✅ WASM glue already present: parsec_web/lib/parsec-web/wasm/equations_parser.js"
+else
+  echo "❌ WASM glue missing. Provide it via environment variable WASM_SOURCE, e.g.:"
+  echo "   WASM_SOURCE=/path/to/equations_parser.js ./setup_web_assets.sh"
+  exit 1
 fi
 
-# Create web assets directory for parsec-web
-mkdir -p parsec/example/web/assets/parsec-web/js/
-mkdir -p parsec/example/web/assets/parsec-web/wasm/
-
-echo "📁 Copying JavaScript wrapper..."
-cp parsec_web_lib/js/equations_parser_wrapper.js parsec/example/web/assets/parsec-web/js/
-
-echo "📁 Ensuring correct WASM module (equations_parser.js) is available..."
-
-NEEDED_WASM="parsec_web_lib/wasm/equations_parser.js"
-
-if [ ! -f "$NEEDED_WASM" ]; then
-    echo "⚠️  equations_parser.js not found in parsec_web_lib/wasm. Attempting to build..."
-    (
-      cd parsec_web_lib
-      if [ -x "./build.sh" ]; then
-        ./build.sh || {
-          echo "❌ Failed to build WebAssembly module. Please install Emscripten and try again.";
-          echo "   See parsec_web_lib/build.sh for instructions.";
-          exit 1;
-        }
-      else
-        echo "❌ Build script not found or not executable"
-        echo "Please build parsec-web manually:"
-        echo "   cd parsec_web_lib && ./build.sh"
-        exit 1
-      fi
-    )
-fi
-
-echo "📁 Copying equations_parser.js to Flutter web assets..."
-cp "$NEEDED_WASM" parsec/example/web/assets/parsec-web/wasm/
-echo "✅ Copied: parsec/example/web/assets/parsec-web/wasm/equations_parser.js"
-
-echo ""
+echo
 echo "✅ Setup complete!"
-echo ""
+echo
 echo "📋 Next steps:"
-echo "1. Ensure parsec/example/web/index.html includes:"
+echo "1. Ensure your app's web/index.html includes:"
 echo '   <script type="module" src="packages/parsec_web/parsec-web/js/equations_parser_wrapper.js"></script>'
-echo '   <!-- WASM is loaded dynamically by the wrapper (../wasm/equations_parser.js); no direct tag needed -->'
-echo ""
-echo "2. Run Flutter web: flutter run -d chrome"
-echo ""
-echo "🚀 WebAssembly should now be available for web platform calculations!"
+echo '   <!-- WASM glue is loaded dynamically by the wrapper (../wasm/equations_parser.js). -->'
+echo
+echo "2. Run Flutter web: cd parsec/example && flutter run -d chrome"
+echo
+echo "🚀 WebAssembly is now bundled from the parsec_web package!"

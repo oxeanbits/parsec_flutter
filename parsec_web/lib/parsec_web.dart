@@ -117,7 +117,7 @@ class ParsecWebPlugin extends ParsecPlatform {
   Future<void> _createAndInitializeParsecInstance() async {
     try {
       _parsecInstance = ParsecJS();
-      // Use the equations-parser module built by parsec_web_lib (relative to the wrapper file)
+      // Load the WASM glue JS relative to the wrapper file bundled in this package
       await _parsecInstance!.initialize('../wasm/equations_parser.js').toDart;
     } catch (error) {
       throw Exception('Failed to initialize Parsec WebAssembly module: $error');
@@ -135,17 +135,15 @@ class ParsecWebPlugin extends ParsecPlatform {
 
   String _getLibraryNotFoundMessage() {
     return '''
-ParsecWebError: parsec-web JavaScript library not found!
+ParsecWebError: parsec-web JavaScript wrapper not found!
 
-The parsec-web library should be available as a git submodule.
-To set it up:
+To enable the Web platform, ensure your app's web/index.html includes:
+  <script type="module" src="packages/parsec_web/parsec-web/js/equations_parser_wrapper.js"></script>
+The wrapper dynamically imports the WASM glue at: ../wasm/equations_parser.js
 
-1. Run the setup script: ./setup_web_assets.sh
-2. Or manually check that web/index.html includes:
-   <script type="module" src="packages/parsec_web/parsec-web/js/equations_parser_wrapper.js"></script>
-   <!-- The wrapper dynamically imports the WASM module; no direct tag needed. -->
-
-Repository: https://github.com/oxeanbits/parsec-web (included as submodule)
+If the WASM glue file is missing during local development, run:
+  ./setup_web_assets.sh
+This syncs the prebuilt WASM glue into the package at lib/parsec-web/wasm/.
 ''';
   }
 }

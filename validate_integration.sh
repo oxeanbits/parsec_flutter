@@ -8,19 +8,11 @@ set -e
 echo "🔍 Validating Parsec Flutter WebAssembly Integration..."
 echo "====================================================="
 
-# Check submodule
-echo "1. Checking parsec-web submodule..."
-if [ -d "parsec_web_lib" ]; then
-    echo "   ✅ parsec_web_lib submodule exists"
-    if [ -f "parsec_web_lib/js/equations_parser_wrapper.js" ]; then
-        echo "   ✅ JavaScript wrapper found"
-    else
-        echo "   ❌ JavaScript wrapper not found"
-        exit 1
-    fi
+echo "1. Checking bundled parsec-web assets..."
+if [ -f "parsec_web/lib/parsec-web/js/equations_parser_wrapper.js" ]; then
+    echo "   ✅ JS wrapper present in package"
 else
-    echo "   ❌ parsec_web_lib submodule not found"
-    echo "   Run: git submodule update --init --recursive"
+    echo "   ❌ JS wrapper missing at parsec_web/lib/parsec-web/js/equations_parser_wrapper.js"
     exit 1
 fi
 
@@ -33,24 +25,11 @@ else
     exit 1
 fi
 
-# Check web assets (if setup was run)
-echo "3. Checking web assets..."
-if [ -d "parsec/example/web/assets/parsec-web" ]; then
-    echo "   ✅ Web assets directory exists"
-    
-    if [ -f "parsec/example/web/assets/parsec-web/js/equations_parser_wrapper.js" ]; then
-        echo "   ✅ JavaScript wrapper copied"
-    else
-        echo "   ⚠️  JavaScript wrapper not copied - run ./setup_web_assets.sh"
-    fi
-    
-    if [ -f "parsec/example/web/assets/parsec-web/wasm/math_functions.js" ]; then
-        echo "   ✅ WebAssembly module found"
-    else
-        echo "   ⚠️  WebAssembly module not found - run ./setup_web_assets.sh"
-    fi
+echo "3. Checking WASM glue within package..."
+if [ -f "parsec_web/lib/parsec-web/wasm/equations_parser.js" ]; then
+    echo "   ✅ WASM glue present"
 else
-    echo "   ⚠️  Web assets not set up - run ./setup_web_assets.sh"
+    echo "   ⚠️  WASM glue missing - run ./setup_web_assets.sh"
 fi
 
 # Check index.html
@@ -58,7 +37,7 @@ echo "4. Checking web/index.html..."
 if [ -f "parsec/example/web/index.html" ]; then
     echo "   ✅ index.html exists"
     
-    if grep -q "parsec-web" "parsec/example/web/index.html"; then
+    if grep -q "packages/parsec_web/parsec-web/js/equations_parser_wrapper.js" "parsec/example/web/index.html"; then
         echo "   ✅ index.html contains parsec-web script references"
     else
         echo "   ⚠️  index.html missing parsec-web script references"
@@ -94,21 +73,12 @@ fi
 echo ""
 echo "🎯 VALIDATION SUMMARY:"
 echo "✅ Core parsec platform implementation: Complete"
-echo "✅ parsec-web git submodule integration: Complete"  
-echo "✅ WebAssembly setup infrastructure: Complete"
+echo "✅ parsec-web assets bundled in package: Complete"  
+echo "✅ WebAssembly setup infrastructure: Complete (package-based)"
 
-if [ -d "parsec/example/web/assets/parsec-web" ]; then
-    echo "✅ Web assets ready: Yes"
-    echo ""
-    echo "🚀 READY TO TEST:"
-    echo "   cd parsec/example && flutter run -d chrome"
-else
-    echo "⚠️  Web assets ready: No"
-    echo ""
-    echo "🔧 TO COMPLETE SETUP:"
-    echo "   ./setup_web_assets.sh"
-    echo "   cd parsec/example && flutter run -d chrome"
-fi
+echo ""
+echo "🚀 READY TO TEST:"
+echo "   cd parsec/example && flutter run -d chrome"
 
 echo ""
 echo "📊 Platform-Based Delegation:"
