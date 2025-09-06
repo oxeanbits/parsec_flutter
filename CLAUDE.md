@@ -1,384 +1,200 @@
-# CLAUDE.md - Parsec Web Development Guide
+This is a Flutter plugin monorepo for the `parsec` math equation parser library that provides cross-platform native C++ math evaluation capabilities.
 
-## 🎯 Project Vision
+## Project Structure
 
-**Parsec Web** is a generalized JavaScript library that connects to the equations-parser WebAssembly module (C++ code compiled to WASM) for high-performance, cross-platform equation evaluation.
+This repository follows a federated Flutter plugin architecture:
 
-### Core Purpose
+- **parsec/**: Main plugin package that depends on platform implementations
+- **parsec_platform_interface/**: Common interface for all platform implementations  
+- **parsec_android/**: Android platform implementation using JNI
+- **parsec_linux/**: Linux platform implementation using FFI
+- **parsec_windows/**: Windows platform implementation using FFI  
+- **parsec_web/**: Web/JavaScript implementation (separate library)
 
-- **Generalization**: Make the library reusable across different JavaScript environments
-- **Cross-Platform**: Support frontend projects, Flutter web, Node.js applications
-- **Performance**: Leverage WebAssembly for fast, client-side equation processing
-- **Offline-First**: No server dependency, completely self-contained
+## Development Environment
 
-## 🏗️ Architecture Overview
+- **Flutter SDK**: >=3.19.0
+- **Dart SDK**: >=3.3.0 <4.0.0
+- **Linting**: Uses `flutter_lints ^4.0.0` for all packages
+- **Testing**: Standard Flutter test framework with platform-specific mocking
 
-```
-JavaScript Applications
-       ↓
-Parsec Web Library (js/equations_parser_wrapper.js)
-       ↓
-WebAssembly Module (wasm/equations_parser.js/.wasm)
-       ↓
-C++ equations-parser Library
-```
+## Key Commands
 
-### Target Platforms
-
-1. **Frontend Projects**: React, Vue, Angular, vanilla JavaScript
-2. **Flutter Web**: Via dart:js_interop integration
-3. **Node.js Applications**: As importable npm package
-4. **Cross-Platform Solutions**: Any JavaScript environment
-
-## 🧪 Testing Framework
-
-The project uses **Vitest** as the primary testing framework for comprehensive equation evaluation testing.
-
-### Test Implementation Strategy
-
-**Test Categories:**
-
-- **Unit Tests** (8 modules): `tests/unit/`
-  - `arithmetic.test.js` - Basic math operations, order of operations
-  - `trigonometry.test.js` - sin, cos, tan, inverse functions, hyperbolic
-  - `logarithms.test.js` - ln, log, exp functions
-  - `strings.test.js` - concat, length, toupper, tolower, substring functions
-  - `dates.test.js` - current_date, daysdiff, hoursdiff functions
-  - `complex.test.js` - real, imag, conj, arg, norm functions
-  - `arrays.test.js` - sizeof, eye, ones, zeros functions
-
-- **Integration Tests** (2 modules): `tests/integration/`
-  - `complex-expressions.test.js` - Multi-function combinations
-  - `mixed-types.test.js` - Different return types (number, string, boolean)
-
-- **Error Handling** (3 modules): `tests/errors/`
-  - `syntax-errors.test.js` - Invalid equation syntax
-  - `runtime-errors.test.js` - Division by zero, invalid arguments
-  - `type-errors.test.js` - Type mismatches, invalid operations
-
-- **Performance Benchmarks** (3 modules): `tests/performance/`
-  - `simple-ops.bench.js` - Basic arithmetic benchmarking
-  - `function-calls.bench.js` - Function call performance
-  - `complex-expr.bench.js` - Complex expression performance
-
-**Testing Commands:**
-
+### Testing
 ```bash
-npm test                 # Run all tests
-npm run test:watch       # Watch mode for development
-npm run test:coverage    # Generate coverage report
-npm run test:unit        # Unit tests only
-npm run test:integration # Integration tests only
-npm run test:performance # Performance benchmarks
+# Test all packages from their respective directories
+cd parsec && flutter test
+cd parsec_android && flutter test  
+cd parsec_linux && flutter test
+cd parsec_windows && flutter test
+cd parsec_platform_interface && flutter test
 ```
 
-## 📦 Library Features
-
-### NPM Package Structure
-
-- `package.json` - Complete npm configuration with proper scripts and metadata
-- Multi-format exports supporting ES6, CommonJS, and UMD patterns
-- TypeScript definitions included for full type safety
-- Professional package structure ready for npm publishing
-
-### Enhanced API
-
-```javascript
-// Parsec class with enhanced functionality
-const parsec = new Parsec()
-await parsec.initialize()
-
-// Batch evaluation
-const results = parsec.evaluateBatch(['2+2', 'sqrt(16)', 'sin(pi/2)'])
-
-// Timeout protection
-const result = await parsec.evaluateWithTimeout('expression', 5000)
-
-// Library metadata
-const info = parsec.getInfo()
-console.log(info.supportedPlatforms) // Multiple platform support info
-```
-
-### Cross-Platform Import Support
-
-```javascript
-// ES6 Modules
-import { Parsec } from 'parsec-web'
-
-// CommonJS (Node.js)
-const { Parsec } = require('parsec-web')
-
-// TypeScript
-import { Parsec, EquationResult } from 'parsec-web'
-```
-
-### Code Quality Infrastructure
-
-- **Prettier**: Automatic code formatting with consistent style rules
-- **ESLint**: Code quality checking with modern JavaScript best practices
-- **npm scripts**: `style:fix`, `lint:fix`, `format`, `test` commands
-- **Vitest configuration**: Modern testing framework setup
-
-**Development Workflow:**
-
+### Linting & Analysis
 ```bash
-npm run style:fix    # Auto-fix formatting and linting
-npm test            # Run comprehensive test suite
-npm run dev         # Start development server
-npm run build       # Build WebAssembly module
+# Run analysis on each package
+cd parsec && flutter analyze
+cd parsec_android && flutter analyze
+cd parsec_linux && flutter analyze  
+cd parsec_windows && flutter analyze
+cd parsec_platform_interface && flutter analyze
 ```
 
-## 🔮 Future Development
-
-### Flutter Web Integration
-
-- **Goal**: `dart:js_interop` integration
-- **Planned**: Dart bindings for JavaScript library
-- **Status**: Future enhancement
-
-## 🧪 Testing Philosophy
-
-**Modern Automated Testing Approach:**
-
-- **Vitest**: Modern testing framework
-- **Automated**: Runs via npm scripts
-- **Comprehensive**: All equations-parser functionality covered
-- **CI/CD Ready**: JSON reports, coverage metrics
-- **Cross-Platform**: Works in any Node.js environment
-
-## 🚀 Quick Development Commands
-
-### Setup & Installation
-
+### Building Example
 ```bash
-npm install                   # Install all dependencies
-chmod +x build.sh             # Make build script executable
-./build.sh                    # Compile C++ to WebAssembly
+cd parsec/example
+flutter build [linux|windows|apk]
 ```
 
-#### WebAssembly Build Requirements
+## Development Standards
 
-The project requires **Emscripten** to compile the C++ equations-parser library to WebAssembly:
+### Clean Code Techniques
 
-- **System Installation**: Install via package manager (`apt-get install emscripten`)
-- **Official Download**: From https://emscripten.org/docs/getting_started/downloads.html
-- **Manual emsdk Setup**: Clone and configure emsdk repository manually
+Always apply these core principles when working with this codebase:
 
-**Manual emsdk Setup** (if needed):
+1. **DRY (Don't Repeat Yourself)**: If code is identical or very similar, extract it into a generalized function. Parameters are your friends.
 
-```bash
-git clone https://github.com/emscripten-core/emsdk.git
-cd emsdk
-./emsdk install latest        # Install latest Emscripten
-./emsdk activate latest       # Activate for use
-source ./emsdk_env.sh         # Set environment variables
-cd ..
-./build.sh                    # Build WebAssembly module
+2. **KISS (Keep It Simple Stupid)**: Make code so "stupid" that a 5-year-old could understand it.
+
+3. **SRP (Single Responsibility Principle)**: Separate code into simple, well-defined, well-intentioned tasks with clear names. Prevents "spaghetti code".
+
+4. **Avoid Hadouken IFs**: Avoid nested IFs → Solution: Early Returns and/or Switch-Cases.
+
+5. **Avoid Negative Conditionals**: Positive conditionals reduce mental strain and make code easier to reason about.
+
+6. **Encapsulate Conditionals**: For conditions with 3+ comparisons, extract into functions that convey the intent. Create names that reveal the conditional's purpose.
+
+7. **Avoid Flag Arguments**: Avoid boolean arguments (true/false) to functions. Use descriptive strings or enums instead.
+
+8. **Avoid Comments**: Code should be self-documenting with intention-revealing names. If comments are necessary, explain the "why" not the "what". Use SRP and intention-revealing names as your primary tools.
+
+9. **Good Nomenclatures**: Use descriptive variable names that reveal intent. Use pronounceable and searchable names. Follow language, business, and team conventions.
+
+10. **Use Vertical Formatting**: Code should read top to bottom without "jumping". Similar and dependent functions should be vertically close.
+
+11. **Boy Scout Rule**: Always leave the codebase cleaner than you found it. Improve Clean Code whenever you touch existing code.
+
+### Testing Guidelines
+
+When working with this project, AI agents just execute tests from changed files
+
+**Philosophy**: User-centric testing principles ensure all tests are meaningful from the user's perspective.
+
+**Structure**: Tests must prioritize clarity, consistency, and maintainability. Write tests for people to read, not machines to execute.
+
+**Real-world Testing**: Favor real-world interactions over mocks/stubs. Avoid mocks and stubs wherever possible.
+
+#### BDD Structure Pattern
+
+- **`describe()` blocks**: Describe scenarios using subordinating conjunctions
+  - Pattern: Start with "when", "after", "while", "with"
+  - Examples:
+    - "when filtering by different column types"
+    - "after the database is populated"
+    - "with multiple conditions"
+
+- **`before()`/`before(:all)`**: Prepare scenarios for testing
+  - Setup database schema, create items, configure environment
+  - Declare important `@variables` for testing
+  - Execute operations and prerequisites
+
+- **`it()` blocks**: Test specific outcomes and assertions
+  - Pattern: Start with "should"
+  - Examples:
+    - "should find exact string matches"
+    - "should be case sensitive"
+    - "should create and associate items correctly"
+
+## Code Patterns & Conventions
+
+### Architecture Pattern
+- Uses the **Platform Interface pattern** with `plugin_platform_interface`
+- Each platform implementation extends `ParsecPlatform` abstract class
+- Method channel communication with native C++ libraries
+- JSON-based result parsing with type safety
+
+### Naming Conventions
+- **Package names**: Snake_case with `parsec_` prefix
+- **Classes**: PascalCase (e.g., `ParsecLinux`, `ParsecAndroid`)
+- **Methods**: camelCase (e.g., `nativeEval`, `parseNativeEvalResult`)
+- **Constants**: UPPER_SNAKE_CASE
+
+### Error Handling
+- Custom exception: `ParsecEvalException` for math evaluation errors
+- JSON response format: `{"val": "result", "type": "i|f|b|s", "error": null}`
+- Platform-specific error propagation through method channels
+
+### Testing Patterns  
+- Mock `MethodChannel` for platform implementations
+- Test registration of platform instances
+- Focus on interface compliance rather than native C++ logic
+
+## File Organization
+
+### Core Plugin (`parsec/`)
+- `lib/parsec.dart`: Main API class with simple `eval(String)` method
+- Depends on platform interface, no direct platform dependencies
+
+### Platform Interface (`parsec_platform_interface/`)
+- `lib/parsec_platform.dart`: Abstract base class for all platforms
+- `lib/parsec_eval_exception.dart`: Custom exception types
+- `lib/method_channel_parsec.dart`: Default method channel implementation
+
+### Platform Implementations
+Each follows identical structure:
+```
+lib/
+  parsec_{platform}.dart     # Main platform class
+test/
+  parsec_{platform}_test.dart # Registration tests
+pubspec.yaml                 # Platform-specific dependencies
 ```
 
-### Testing (Vitest Framework)
+## Dependencies & Versioning
 
-```bash
-npm test                      # Run complete test suite
-npm run test:watch            # Development mode with auto-rerun
-npm run test:coverage         # Generate coverage report
-npm run test:unit             # Unit tests only
-npm run test:integration      # Integration tests only
-npm run test:performance      # Performance benchmarks only
-```
+- **Platform Interface Version**: Currently ^0.2.0 across all implementations
+- **Flutter Lints**: ^4.0.0 (latest) for strict code quality
+- **Plugin Platform Interface**: ^2.1.8 for base platform functionality
 
-### Code Quality & Formatting
+## Native Integration Points
 
-```bash
-npm run lint          # 🔍 Run ESLint checks
-npm run lint:fix      # 🤖 Auto-fix linting issues
-npm run format:check  # 🔍 Check formatting without changes
-npm run format        # 🤖 Format code with Prettier
-npm run style:fix     # 🤖 🦾 Fix both linting and formatting
-```
+- **Android**: JNI bridge to C++ equations-parser library
+- **Linux**: FFI integration with compiled C++ library  
+- **Windows**: FFI integration with compiled C++ library
+- **Method Channels**: Standard Flutter communication pattern
 
-### Development Server
+## Important Development Notes
 
-```bash
-npm run dev                   # Start development server (port 8000)
-npm run serve                 # Alternative server command
-# Access: http://localhost:8000
-```
+- This is a **federated plugin** - changes to platform interface affect all implementations
+- Native libraries are **pre-built** and included in platform packages
+- Local path dependencies are used for development (see pubspec.yaml files)
+- No iOS/macOS/Web support in main plugin (separate web library exists)
 
-### Library Usage Testing
+## When Working on This Codebase
 
-```bash
-# Test CommonJS import in Node.js
-node -e "const E = require('./index.js'); console.log('✅ CommonJS works')"
-
-# Test ES6 import (requires Node.js with ES modules support)
-node --input-type=module -e "import('./index.mjs').then(()=>console.log('✅ ES6 works'))"
-```
-
-### Publishing to npm
-
-The repository is configured as a production-ready npm package with dual CommonJS/ES module support:
-
-```bash
-# 1. Ensure everything is built and tested
-npm run build          # Builds WebAssembly module
-npm test              # Runs comprehensive test suite
-npm run lint          # Checks code quality
-
-# 2. Test package creation
-npm pack --dry-run    # Preview what will be published
-
-# 3. Login to npm (if not already)
-npm login
-
-# 4. Publish to npm registry
-npm publish
-
-# 5. Or publish as scoped package
-npm publish --access public
-```
-
-**Package Structure:**
-
-- **CommonJS entry**: `index.cjs` for Node.js `require()`
-- **ES Module entry**: `index.mjs` for modern `import`
-- **TypeScript definitions**: `types.d.ts` with complete type safety
-- **Automated scripts**: `prepublishOnly` and `prepack` ensure quality
-
-**Installation for users:**
-
-```bash
-npm install parsec-web
-```
-
-**Usage examples:**
-
-```javascript
-// CommonJS (Node.js)
-const { Parsec } = require('parsec-web')
-
-// ES Modules (modern)
-import { Parsec } from 'parsec-web'
-
-// Usage
-const parsec = new Parsec()
-await parsec.initialize()
-const result = parsec.eval('2 + 3 * 4') // Returns: 14
-```
-
-## 📁 Project Structure
-
-```
-parsec-web/
-├── cpp/                      # C++ source files
-│   └── equations-parser/     # Git submodule
-├── js/                       # JavaScript library
-│   └── equations_parser_wrapper.js  # Core WebAssembly wrapper (Parsec class)
-├── wasm/                     # Generated WebAssembly files
-│   └── equations_parser.js   # Main WebAssembly module
-├── tests/                    # Vitest test suites
-│   ├── setup.js              # Global test configuration
-│   ├── unit/                 # Function category tests
-│   ├── integration/          # Complex expression tests
-│   ├── errors/               # Error handling tests
-│   └── performance/          # Benchmark tests
-├── index.js                  # CommonJS entry point
-├── index.mjs                 # ES6 module entry point
-├── types.d.ts                # TypeScript definitions
-├── package.json              # npm package configuration
-├── vitest.config.js          # Vitest configuration
-├── .eslintrc.js              # ESLint configuration
-├── .prettierrc               # Prettier configuration
-├── .prettierignore           # Prettier ignore patterns
-├── build.sh                  # WebAssembly build script
-├── README.md                 # Public documentation
-└── CLAUDE.md                 # This development guide
-```
-
-## 🎯 Key API Usage
-
-### Primary Interface
-
-```javascript
-// Import the library
-import Parsec from './js/equations_parser_wrapper.js'
-
-// Initialize WebAssembly module
-const parsec = new Parsec()
-await parsec.initialize()
-
-// Evaluate equations
-const result = parsec.eval('2 + 3 * 4') // Returns: 14
-const trig = parsec.eval('sin(pi/2)') // Returns: 1
-const complex = parsec.eval('real(3+4i)') // Returns: 3
-const string = parsec.eval('concat("a","b")') // Returns: "ab"
-```
-
-### Test Structure Pattern
-
-```javascript
-// All tests follow this pattern
-class SomeTests {
-  constructor(testRunner) {
-    this.testRunner = testRunner
-  }
-
-  async runTests() {
-    const result = await this.testRunner.evaluate('some_equation')
-    this.testRunner.assertEqual(result, expected, 'Test description')
-  }
-}
-```
-
-## 🚦 Development Workflow
-
-1. **Make Changes**: Edit C++, JavaScript, or test files
-2. **Rebuild WASM**: `./build.sh` (if C++ changed)
-3. **Run Tests**: `npm test` (verify functionality)
-4. **Fix Issues**: Address any failing tests
-5. **Lint Code**: `npm run lint` (maintain code quality)
-6. **Update Docs**: Keep README.md and CLAUDE.md current
-
-## 🔍 Debugging & Troubleshooting
-
-### Common Issues
-
-- **Module Loading**: Ensure proper ES6 module paths
-- **WebAssembly Path**: Check WASM file path resolution
-- **Import Errors**: Verify proper import/export statements
-- **Test Failures**: Use `npm run test:watch` for iterative debugging
-
-### Debug Commands
-
-```bash
-# Detailed test output
-npm test -- --reporter verbose
-
-# Run single test file
-npm test -- arithmetic.test.js
-
-# Debug mode with console output
-npm test -- --reporter verbose --silent false
-```
-
-This guide serves as the definitive reference for Parsec Web development, focusing on the modern testing approach and cross-platform generalization goals.
+1. **Always test across platforms** - changes to interface affect all implementations
+2. **Maintain version consistency** - keep platform interface versions aligned
+3. **Follow Flutter plugin conventions** - use established patterns for method channels
+4. **Preserve JSON contract** - native libraries expect specific response format
+5. **Update documentation** - especially README.md examples if API changes
+6. **Run analysis** - ensure all packages pass `flutter analyze` before commits
 
 ## Pull Request Guidance
 
-When prompted with **"draft a pull request"**:
+ONLY When prompted with **"draft a pull request"**:
 
 1. **Analyze changes**
-   - Compare everything done on the current branch against `main`.
-   - Summarize all relevant commits, file modifications, and key impacts.
+   * Compare everything done on the current branch against `master`/`main` branch of `upstream`.
+   * Summarize all relevant commits, file modifications, and key impacts.
 
 2. **Create a Markdown draft**
-   - Produce content that can be pasted directly into the PR **title** and **description** fields.
-   - **Structure** the description with the template imported below: .github/pull_request_template.md
-   - Enhance clarity with markdown code fences with language tags, colors, tables, blockquotes for callouts, admonitions (GitHub alerts), mermaid diagrams, images, collapsible details and etc.
+   * Produce content that can be pasted directly into the PR **title** and **description** fields.
+   * **Structure** the description with the template imported below: .github/pull_request_template.md
+   * Enhance clarity with markdown code fences with language tags, colors, tables, blockquotes for callouts, admonitions (GitHub alerts), mermaid diagrams, images, collapsible details and etc.
 
 3. **Write the Test Guidance section**
-   - Assume the tester has minimal backend or API knowledge.
-   - Describe step-by-step checks performed purely through the frontend—mouse clicks, typing, and other UI interactions.
+   * Assume a tester is going to test the changes proposed on this pull request.
+   * Describe step-by-step checks needs to be performed to carefully test it.
 
 4. **Generate a Markdown file**
-   - Generate a `pull_request.md` file containing the Pull Request title and description
+   * Generate a `pull_request.md` file containing the Pull Request title and description
