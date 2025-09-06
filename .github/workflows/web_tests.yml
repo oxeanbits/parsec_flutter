@@ -2,9 +2,11 @@ name: Web Integration Tests
 
 on:
   push:
-    branches: [ main, develop, implement_parsec_web ]
+    branches:
+      - '**'
   pull_request:
-    branches: [ main ]
+    branches:
+      - '**'
   workflow_dispatch:
 
 jobs:
