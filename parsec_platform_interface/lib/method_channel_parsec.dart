@@ -1,16 +1,22 @@
 import 'package:flutter/services.dart';
 import 'parsec_platform.dart';
 
-const _channel = MethodChannel('parsec_flutter');
+const _channelName = 'parsec_flutter';
+const _evalMethodName = 'nativeEval';
 
-/// An implementation of [ParsecPlatformInterfacePlatform] that uses method channels.
+/// Method channel implementation for native platform communication.
+/// 
+/// Handles equation evaluation on Android, iOS, Windows, Linux, and macOS
+/// through platform-specific implementations using method channels.
 class MethodChannelParsec extends ParsecPlatform {
-  /// The method channel used to interact with the native platform.
+  final MethodChannel _methodChannel = const MethodChannel(_channelName);
+
   @override
-  Future<dynamic> nativeEval(String equation) {
-    return _channel.invokeMethod(
-      'nativeEval',
-      {'equation': equation},
-    ).then((result) => result);
+  Future<dynamic> nativeEval(String equation) async {
+    if (equation.trim().isEmpty) {
+      throw ArgumentError.value(equation, 'equation', 'Equation cannot be empty');
+    }
+
+    return _methodChannel.invokeMethod(_evalMethodName, {'equation': equation});
   }
 }

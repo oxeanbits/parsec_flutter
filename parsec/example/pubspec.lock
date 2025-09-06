@@ -75,6 +75,19 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_web_plugins:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
+  js:
+    dependency: transitive
+    description:
+      name: js
+      sha256: c1b2e9b5ea78c45e1a0788d29606ba27dc5f71f019f32ca5140f61ef071838cf
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.1"
   leak_tracker:
     dependency: transitive
     description:
@@ -144,31 +157,35 @@ packages:
       path: "../../parsec_android"
       relative: true
     source: path
-    version: "0.3.2"
+    version: "0.4.0"
   parsec_linux:
     dependency: transitive
     description:
-      name: parsec_linux
-      sha256: "0f15d32dca7b6d9e64c1c6bcfee018863c1a68edf189e51eeb46b0ad7b535a2d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.1"
+      path: "../../parsec_linux"
+      relative: true
+    source: path
+    version: "0.4.0"
   parsec_platform_interface:
+    dependency: "direct overridden"
+    description:
+      path: "../../parsec_platform_interface"
+      relative: true
+    source: path
+    version: "0.2.0"
+  parsec_web:
     dependency: transitive
     description:
-      name: parsec_platform_interface
-      sha256: e111204cdb14847045e9ad5374ec06b60e225cddf0c0eafce156492f8d57dd45
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.1"
+      path: "../../parsec_web"
+      relative: true
+    source: path
+    version: "0.1.0"
   parsec_windows:
     dependency: transitive
     description:
-      name: parsec_windows
-      sha256: a361c9e4c7bc3af91ff6cce83664e9568673274cab9996803ea6184d4b3ecee5
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
+      path: "../../parsec_windows"
+      relative: true
+    source: path
+    version: "0.2.0"
   path:
     dependency: transitive
     description:
@@ -181,10 +198,10 @@ packages:
     dependency: transitive
     description:
       name: plugin_platform_interface
-      sha256: dbf0f707c78beedc9200146ad3cb0ab4d5da13c246336987be6940f026500d3a
+      sha256: "4820fbfdb9478b1ebae27888254d445073732dae3d6ea81f0b7e06d5dedc3f02"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.3"
+    version: "2.1.8"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -254,6 +271,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.3.0"
+  web:
+    dependency: transitive
+    description:
+      name: web
+      sha256: "97da13628db363c635202ad97068d47c5b8aa555808e7a9411963c533b449b27"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.1"
 sdks:
   dart: ">=3.4.0 <4.0.0"
   flutter: ">=3.19.0"

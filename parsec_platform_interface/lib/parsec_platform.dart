@@ -40,11 +40,28 @@ abstract class ParsecPlatform extends PlatformInterface {
 
     switch (type) {
       case 'i':
-        return int.parse(val);
+        // Some backends may already return a numeric; normalize to string first
+        final str = val.toString();
+        return int.parse(str);
       case 'f':
-        return double.parse(val);
+        // Normalize known special float encodings across environments
+        final s = val.toString();
+        switch (s) {
+          case 'Infinity':
+          case 'inf':
+            return double.infinity;
+          case '-Infinity':
+          case '-inf':
+            return double.negativeInfinity;
+          case 'NaN':
+          case 'nan':
+          case '-nan':
+            return double.nan;
+          default:
+            return double.parse(s);
+        }
       case 'b':
-        return val == 'true';
+        return val == true || val == 'true';
       default:
         return val;
     }
