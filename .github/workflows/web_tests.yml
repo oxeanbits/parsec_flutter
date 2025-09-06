@@ -118,6 +118,11 @@ jobs:
         channel: stable
         cache: true
     
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y emscripten
+    
     - name: Setup Web Assets
       run: |
         chmod +x setup_web_assets.sh
@@ -160,6 +165,11 @@ jobs:
         flutter-version: 3.24.0
         channel: stable
         cache: true
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y emscripten
     
     - name: Setup Web Assets
       run: |

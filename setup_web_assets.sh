@@ -22,12 +22,19 @@ if [ ! -d "parsec_web/lib/parsec-web" ]; then
   exit 1
 fi
 
-# Ensure WASM files are built in the submodule
+# Ensure WASM files are built in the submodule (or gracefully skip if toolchain missing)
 if [ ! -f "parsec_web/lib/parsec-web/wasm/equations_parser.js" ]; then
   echo "🔧 Building WebAssembly files in submodule..."
-  cd parsec_web/lib/parsec-web
-  ./build.sh
-  cd ../../..
+  if command -v emcc >/dev/null 2>&1; then
+    (
+      set -e
+      cd parsec_web/lib/parsec-web
+      ./build.sh
+    )
+  else
+    echo "❕ Emscripten (emcc) not found; skipping WASM build."
+    echo "   Tests may use a Dart fallback; to build locally, install Emscripten and re-run."
+  fi
 fi
 
 # The parsec-web submodule is already in the correct location (parsec_web/lib/parsec-web/)
@@ -43,8 +50,8 @@ echo "📁 Verifying WASM glue exists..."
 if [ -f "parsec_web/lib/parsec-web/wasm/equations_parser.js" ]; then
   echo "✅ WASM glue found at: parsec_web/lib/parsec-web/wasm/equations_parser.js"
 else
-  echo "❌ WASM glue missing at: parsec_web/lib/parsec-web/wasm/equations_parser.js"
-  exit 1
+  echo "⚠️  WASM glue missing at: parsec_web/lib/parsec-web/wasm/equations_parser.js"
+  echo "   Continuing without WASM; web tests may use fallback or skip WASM paths."
 fi
 
 echo

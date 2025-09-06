@@ -3,8 +3,12 @@
 .aider*
 .claude/
 
-# Ignore all files within any directory named "wasm"
+# Ignore generated WebAssembly outputs by default
 **/wasm/**
+# But keep the prebuilt artifacts shipped with the web submodule
+!parsec_web/lib/parsec-web/wasm/
+!parsec_web/lib/parsec-web/wasm/equations_parser.js
+!parsec_web/lib/parsec-web/wasm/equations_parser.wasm
 
 # Dart/Flutter build artifacts
 **/.dart_tool/**
