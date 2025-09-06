@@ -1,9 +1,6 @@
-import 'dart:js_interop';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:parsec/parsec.dart';
 import 'package:parsec_platform_interface/parsec_platform_interface.dart';
-import 'package:parsec_web/parsec_web.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
