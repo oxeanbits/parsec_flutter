@@ -282,7 +282,37 @@ flutter test parsec/
 flutter test parsec_android/
 flutter test parsec_linux/
 flutter test parsec_windows/
+flutter test --platform chrome parsec/  # Web-specific tests
 ```
+
+## Web Testing (WebAssembly Integration)
+
+The Web platform uses **real WebAssembly** compiled from the same C++ equations-parser library used by native platforms, ensuring true cross-platform consistency.
+
+### Running Web Tests
+
+```bash
+# Run all Web integration tests
+cd parsec
+flutter test --platform chrome
+
+# Run specific Web integration tests
+flutter test --platform chrome test/parsec_web_integration_test.dart
+
+# Run with coverage
+flutter test --platform chrome --coverage
+```
+
+### Automated Testing
+
+GitHub Actions automatically runs comprehensive Web tests:
+
+- **Multi-Flutter Versions**: Tests against Flutter 3.19.0 and 3.24.0  
+- **Browser Testing**: Chrome-based automated testing
+- **Performance Benchmarks**: WebAssembly efficiency validation
+- **Cross-Platform Consistency**: Identical results across all platforms
+
+See [WEB_TESTING.md](WEB_TESTING.md) for detailed testing documentation.
 
 ## Contributing
 
