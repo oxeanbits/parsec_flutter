@@ -12,7 +12,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   js: ^0.7.1
-  web: ^1.0.0
+  web: ^0.5.1
   parsec_platform_interface: ^0.2.0
 
 dev_dependencies:
