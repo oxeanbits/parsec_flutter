@@ -1,0 +1,61 @@
+name: Flutter CI (Basic)
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    name: Analyze packages
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.24.0
+          channel: stable
+          cache: true
+
+      - name: Flutter version
+        run: flutter --version
+
+      - name: Analyze parsec_platform_interface
+        run: |
+          cd parsec_platform_interface
+          flutter pub get
+          flutter analyze --no-fatal-infos
+
+      - name: Analyze parsec
+        run: |
+          cd parsec
+          flutter pub get
+          flutter analyze --no-fatal-infos
+
+      - name: Analyze parsec_android
+        run: |
+          cd parsec_android
+          flutter pub get
+          flutter analyze --no-fatal-infos
+
+      - name: Analyze parsec_linux
+        run: |
+          cd parsec_linux
+          flutter pub get
+          flutter analyze --no-fatal-infos
+
+      - name: Analyze parsec_windows
+        run: |
+          cd parsec_windows
+          flutter pub get
+          flutter analyze --no-fatal-infos
+
