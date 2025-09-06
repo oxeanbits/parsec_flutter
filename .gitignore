@@ -1,4 +1,7 @@
+# Ignore local files
+/local
+.aider*
+.claude/
+
 # Ignore all files within any directory named "wasm"
 **/wasm/**
-
-/local
