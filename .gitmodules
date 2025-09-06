@@ -8,3 +8,6 @@
 	path = parsec_windows/windows/ext/equations-parser
 	url = https://github.com/niltonvasques/equations-parser
 	branch = windows-version
+[submodule "parsec-web"]
+	path = parsec-web
+	url = git@github.com:oxeanbits/parsec-web.git

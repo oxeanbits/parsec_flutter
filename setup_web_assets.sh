@@ -1,44 +1,50 @@
 #!/bin/bash
 
 # Setup script to make parsec-web available to Flutter web builds
-# This script syncs the JS wrapper and WASM glue into the parsec_web package
-# so Flutter web builds can load them directly from:
+# This script creates symbolic links from the parsec-web submodule files
+# into the parsec_web package so Flutter web builds can load them directly from:
 #   packages/parsec_web/parsec-web/js/equations_parser_wrapper.js
 #   packages/parsec_web/parsec-web/wasm/equations_parser.js
 
 set -e
 
-echo "🔧 Setting up parsec-web assets inside parsec_web package..."
-echo "==========================================================="
+echo "🔧 Setting up parsec-web assets via symbolic links..."
+echo "===================================================="
+
+# Check if parsec-web submodule exists
+if [ ! -d "parsec-web" ]; then
+  echo "❌ parsec-web submodule not found!"
+  echo "   Please initialize the submodule first:"
+  echo "   git submodule update --init --recursive"
+  exit 1
+fi
+
+# Ensure WASM files are built in the submodule
+if [ ! -f "parsec-web/wasm/equations_parser.js" ]; then
+  echo "🔧 Building WebAssembly files in submodule..."
+  cd parsec-web
+  ./build.sh
+  cd ..
+fi
 
 # Create package asset directories
 mkdir -p parsec_web/lib/parsec-web/js/
 mkdir -p parsec_web/lib/parsec-web/wasm/
 
-echo "📁 Ensuring JavaScript wrapper exists in package..."
-if [ -f "parsec_web/lib/parsec-web/js/equations_parser_wrapper.js" ]; then
-  echo "✅ Wrapper present at parsec_web/lib/parsec-web/js/equations_parser_wrapper.js"
+echo "📁 Creating symbolic link to JavaScript wrapper from submodule..."
+if [ -L "parsec_web/lib/parsec-web/js/equations_parser_wrapper.js" ]; then
+  echo "✅ Symbolic link already exists: parsec_web/lib/parsec-web/js/equations_parser_wrapper.js"
 else
-  echo "❌ Wrapper missing at parsec_web/lib/parsec-web/js/equations_parser_wrapper.js"
-  echo "   This file should be committed to the repository."
-  exit 1
+  ln -sf ../../../../../parsec-web/js/equations_parser_wrapper.js parsec_web/lib/parsec-web/js/equations_parser_wrapper.js
+  echo "✅ Created symbolic link: parsec_web/lib/parsec-web/js/equations_parser_wrapper.js → parsec-web/js/"
 fi
 
-echo "📁 Ensuring WASM glue (equations_parser.js) is available..."
-if [ -n "$WASM_SOURCE" ]; then
-  if [ -f "$WASM_SOURCE" ]; then
-    cp "$WASM_SOURCE" parsec_web/lib/parsec-web/wasm/equations_parser.js
-    echo "✅ Copied from WASM_SOURCE to parsec_web/lib/parsec-web/wasm/equations_parser.js"
-  else
-    echo "❌ WASM_SOURCE path does not exist: $WASM_SOURCE"
-    exit 1
-  fi
-elif [ -f "parsec_web/lib/parsec-web/wasm/equations_parser.js" ]; then
-  echo "✅ WASM glue already present: parsec_web/lib/parsec-web/wasm/equations_parser.js"
+echo "📁 Creating symbolic link to WASM glue from submodule..."
+if [ -L "parsec_web/lib/parsec-web/wasm/equations_parser.js" ]; then
+  echo "✅ Symbolic link already exists: parsec_web/lib/parsec-web/wasm/equations_parser.js"
 else
-  echo "❌ WASM glue missing. Provide it via environment variable WASM_SOURCE, e.g.:"
-  echo "   WASM_SOURCE=/path/to/equations_parser.js ./setup_web_assets.sh"
-  exit 1
+  ln -sf ../../../../../parsec-web/wasm/equations_parser.js parsec_web/lib/parsec-web/wasm/equations_parser.js
+  echo "✅ Created symbolic link: parsec_web/lib/parsec-web/wasm/equations_parser.js → parsec-web/wasm/"
 fi
 
 echo
