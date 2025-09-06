@@ -1,395 +1,33 @@
+import 'dart:js_interop';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:parsec/parsec.dart';
 import 'package:parsec_platform_interface/parsec_platform_interface.dart';
-
-/// Mock implementation of ParsecPlatform for testing
-class MockParsecPlatform extends ParsecPlatform {
-  @override
-  Future<dynamic> nativeEval(String equation) async {
-    // Validate input
-    if (equation.trim().isEmpty) {
-      throw ArgumentError('Equation cannot be empty');
-    }
-
-    // Return JSON string like the real implementation, which gets parsed by the platform interface
-    final jsonResult = _getJsonResult(equation.trim());
-    return parseNativeEvalResult(jsonResult);
-  }
-
-  String _getJsonResult(String equation) {
-    // Mock responses based on the equation input to simulate the actual parser behavior
-    switch (equation) {
-      // Arithmetic operations
-      case '2 + 3':
-        return '{"val": "5", "type": "i", "error": null}';
-      case '0 + 0':
-        return '{"val": "0", "type": "i", "error": null}';
-      case '-5 + 3':
-        return '{"val": "-2", "type": "i", "error": null}';
-      case '1.5 + 2.5':
-        return '{"val": "4", "type": "f", "error": null}';
-      case '5 - 3':
-        return '{"val": "2", "type": "i", "error": null}';
-      case '0 - 0':
-        return '{"val": "0", "type": "i", "error": null}';
-      case '-5 - 3':
-        return '{"val": "-8", "type": "i", "error": null}';
-      case '10.5 - 2.3':
-        return '{"val": "8.2", "type": "f", "error": null}';
-      case '3 * 4':
-        return '{"val": "12", "type": "i", "error": null}';
-      case '0 * 5':
-        return '{"val": "0", "type": "i", "error": null}';
-      case '-3 * 4':
-        return '{"val": "-12", "type": "i", "error": null}';
-      case '1.5 * 2':
-        return '{"val": "3", "type": "f", "error": null}';
-      case '8 / 2':
-        return '{"val": "4", "type": "i", "error": null}';
-      case '0 / 5':
-        return '{"val": "0", "type": "i", "error": null}';
-      case '-8 / 2':
-        return '{"val": "-4", "type": "i", "error": null}';
-      case '7 / 2':
-        return '{"val": "3.5", "type": "f", "error": null}';
-      case '5 / 0':
-        return '{"val": "Infinity", "type": "f", "error": null}';
-      case '0 / 0':
-        return '{"val": "NaN", "type": "f", "error": null}';
-
-      // Order of operations
-      case '2 + 3 * 4':
-        return '{"val": "14", "type": "i", "error": null}';
-      case '(2 + 3) * 4':
-        return '{"val": "20", "type": "i", "error": null}';
-      case '2 * 3 + 4':
-        return '{"val": "10", "type": "i", "error": null}';
-      case '2 * (3 + 4)':
-        return '{"val": "14", "type": "i", "error": null}';
-      case '((2 + 3) * 4) - 1':
-        return '{"val": "19", "type": "i", "error": null}';
-      case '2 * ((3 + 4) * 2)':
-        return '{"val": "28", "type": "i", "error": null}';
-
-      // Power operations
-      case '2 ^ 3':
-        return '{"val": "8", "type": "i", "error": null}';
-      case '5 ^ 0':
-        return '{"val": "1", "type": "i", "error": null}';
-      case '4 ^ 0.5':
-        return '{"val": "2", "type": "f", "error": null}';
-      case 'pow(2, 3)':
-        return '{"val": "8", "type": "i", "error": null}';
-      case 'pow(5, 0)':
-        return '{"val": "1", "type": "i", "error": null}';
-      case 'pow(4, 0.5)':
-        return '{"val": "2", "type": "f", "error": null}';
-
-      // Mathematical functions
-      case 'abs(-5)':
-        return '{"val": "5", "type": "i", "error": null}';
-      case 'abs(5)':
-        return '{"val": "5", "type": "i", "error": null}';
-      case 'abs(0)':
-        return '{"val": "0", "type": "i", "error": null}';
-      case 'sqrt(0)':
-        return '{"val": "0", "type": "i", "error": null}';
-      case 'sqrt(1)':
-        return '{"val": "1", "type": "i", "error": null}';
-      case 'sqrt(4)':
-        return '{"val": "2", "type": "i", "error": null}';
-      case 'sqrt(9)':
-        return '{"val": "3", "type": "i", "error": null}';
-      case 'sqrt(-1)':
-        return '{"val": "NaN", "type": "f", "error": null}';
-      case 'cbrt(0)':
-        return '{"val": "0", "type": "i", "error": null}';
-      case 'cbrt(1)':
-        return '{"val": "1", "type": "i", "error": null}';
-      case 'cbrt(8)':
-        return '{"val": "2", "type": "i", "error": null}';
-      case 'cbrt(27)':
-        return '{"val": "3", "type": "i", "error": null}';
-
-      // Rounding
-      case 'round(3.2)':
-        return '{"val": "3", "type": "i", "error": null}';
-      case 'round(3.7)':
-        return '{"val": "4", "type": "i", "error": null}';
-      case 'round(-3.2)':
-        return '{"val": "-3", "type": "i", "error": null}';
-      case 'round(-3.7)':
-        return '{"val": "-4", "type": "i", "error": null}';
-
-      // Min/Max
-      case 'min(3, 5)':
-        return '{"val": "3", "type": "i", "error": null}';
-      case 'min(5, 3)':
-        return '{"val": "3", "type": "i", "error": null}';
-      case 'min(-2, -5)':
-        return '{"val": "-5", "type": "i", "error": null}';
-      case 'max(3, 5)':
-        return '{"val": "5", "type": "i", "error": null}';
-      case 'max(5, 3)':
-        return '{"val": "5", "type": "i", "error": null}';
-      case 'max(-2, -5)':
-        return '{"val": "-2", "type": "i", "error": null}';
-
-      // Constants
-      case 'pi':
-        return '{"val": "3.141592653589793", "type": "f", "error": null}';
-      case 'e':
-        return '{"val": "2.718281828459045", "type": "f", "error": null}';
-
-      // Trigonometric
-      case 'sin(0)':
-        return '{"val": "0", "type": "f", "error": null}';
-      case 'sin(pi/2)':
-        return '{"val": "1", "type": "f", "error": null}';
-      case 'sin(pi)':
-        return '{"val": "0", "type": "f", "error": null}';
-      case 'cos(0)':
-        return '{"val": "1", "type": "f", "error": null}';
-      case 'cos(pi/2)':
-        return '{"val": "0", "type": "f", "error": null}';
-      case 'cos(pi)':
-        return '{"val": "-1", "type": "f", "error": null}';
-      case 'tan(0)':
-        return '{"val": "0", "type": "f", "error": null}';
-      case 'tan(pi/4)':
-        return '{"val": "1", "type": "f", "error": null}';
-      case 'tan(pi)':
-        return '{"val": "0", "type": "f", "error": null}';
-      case 'asin(0)':
-        return '{"val": "0", "type": "f", "error": null}';
-      case 'asin(1)':
-        return '{"val": "1.5707963267948966", "type": "f", "error": null}';
-      case 'acos(1)':
-        return '{"val": "0", "type": "f", "error": null}';
-      case 'acos(0)':
-        return '{"val": "1.5707963267948966", "type": "f", "error": null}';
-      case 'atan(0)':
-        return '{"val": "0", "type": "f", "error": null}';
-      case 'atan(1)':
-        return '{"val": "0.7853981633974483", "type": "f", "error": null}';
-
-      // Hyperbolic
-      case 'sinh(0)':
-        return '{"val": "0", "type": "f", "error": null}';
-      case 'sinh(1)':
-        return '{"val": "1.1752011936438014", "type": "f", "error": null}';
-      case 'cosh(0)':
-        return '{"val": "1", "type": "f", "error": null}';
-      case 'cosh(1)':
-        return '{"val": "1.5430806348152437", "type": "f", "error": null}';
-      case 'tanh(0)':
-        return '{"val": "0", "type": "f", "error": null}';
-      case 'tanh(1)':
-        return '{"val": "0.7615941559557649", "type": "f", "error": null}';
-
-      // Logarithmic and exponential
-      case 'ln(1)':
-        return '{"val": "0", "type": "f", "error": null}';
-      case 'ln(e)':
-        return '{"val": "1", "type": "f", "error": null}';
-      case 'ln(10)':
-        return '{"val": "2.302585092994046", "type": "f", "error": null}';
-      case 'ln(0)':
-        return '{"val": "-Infinity", "type": "f", "error": null}';
-      case 'ln(-1)':
-        return '{"val": "NaN", "type": "f", "error": null}';
-      case 'log10(1)':
-        return '{"val": "0", "type": "f", "error": null}';
-      case 'log10(10)':
-        return '{"val": "1", "type": "f", "error": null}';
-      case 'log10(100)':
-        return '{"val": "2", "type": "f", "error": null}';
-      case 'log10(0)':
-        return '{"val": "-Infinity", "type": "f", "error": null}';
-      case 'log10(-1)':
-        return '{"val": "NaN", "type": "f", "error": null}';
-      case 'log2(1)':
-        return '{"val": "0", "type": "f", "error": null}';
-      case 'log2(2)':
-        return '{"val": "1", "type": "f", "error": null}';
-      case 'log2(8)':
-        return '{"val": "3", "type": "f", "error": null}';
-      case 'exp(0)':
-        return '{"val": "1", "type": "f", "error": null}';
-      case 'exp(1)':
-        return '{"val": "2.718281828459045", "type": "f", "error": null}';
-      case 'exp(2)':
-        return '{"val": "7.38905609893065", "type": "f", "error": null}';
-
-      // String functions
-      case '"Hello World"':
-        return '{"val": "Hello World", "type": "s", "error": null}';
-      case '""':
-        return '{"val": "", "type": "s", "error": null}';
-      case '"Test String"':
-        return '{"val": "Test String", "type": "s", "error": null}';
-      case 'concat("Hello", " World")':
-        return '{"val": "Hello World", "type": "s", "error": null}';
-      case 'concat("", "")':
-        return '{"val": "", "type": "s", "error": null}';
-      case 'concat("A", "B")':
-        return '{"val": "AB", "type": "s", "error": null}';
-      case 'length("Hello")':
-        return '{"val": "5", "type": "i", "error": null}';
-      case 'length("")':
-        return '{"val": "0", "type": "i", "error": null}';
-      case 'length("Test String")':
-        return '{"val": "11", "type": "i", "error": null}';
-      case 'toupper("hello")':
-        return '{"val": "HELLO", "type": "s", "error": null}';
-      case 'toupper("Hello World")':
-        return '{"val": "HELLO WORLD", "type": "s", "error": null}';
-      case 'toupper("")':
-        return '{"val": "", "type": "s", "error": null}';
-      case 'tolower("HELLO")':
-        return '{"val": "hello", "type": "s", "error": null}';
-      case 'tolower("Hello World")':
-        return '{"val": "hello world", "type": "s", "error": null}';
-      case 'tolower("")':
-        return '{"val": "", "type": "s", "error": null}';
-      case 'left("Hello World", 5)':
-        return '{"val": "Hello", "type": "s", "error": null}';
-      case 'left("Test", 2)':
-        return '{"val": "Te", "type": "s", "error": null}';
-      case 'left("Hello", 10)':
-        return '{"val": "Hello", "type": "s", "error": null}';
-      case 'right("Hello World", 5)':
-        return '{"val": "World", "type": "s", "error": null}';
-      case 'right("Test", 2)':
-        return '{"val": "st", "type": "s", "error": null}';
-      case 'right("Hello", 10)':
-        return '{"val": "Hello", "type": "s", "error": null}';
-      case 'str2number("42")':
-        return '{"val": "42", "type": "i", "error": null}';
-      case 'str2number("3.14")':
-        return '{"val": "3.14", "type": "f", "error": null}';
-      case 'str2number("-5")':
-        return '{"val": "-5", "type": "i", "error": null}';
-      case 'string(42)':
-        return '{"val": "42", "type": "s", "error": null}';
-      case 'string(3.14)':
-        return '{"val": "3.14", "type": "s", "error": null}';
-      case 'string(true)':
-        return '{"val": "true", "type": "s", "error": null}';
-      case 'string(false)':
-        return '{"val": "false", "type": "s", "error": null}';
-
-      // Boolean operations
-      case 'true':
-        return '{"val": "true", "type": "b", "error": null}';
-      case 'false':
-        return '{"val": "false", "type": "b", "error": null}';
-      case '5 > 3':
-        return '{"val": "true", "type": "b", "error": null}';
-      case '3 > 5':
-        return '{"val": "false", "type": "b", "error": null}';
-      case '5 > 5':
-        return '{"val": "false", "type": "b", "error": null}';
-      case '3 < 5':
-        return '{"val": "true", "type": "b", "error": null}';
-      case '5 < 3':
-        return '{"val": "false", "type": "b", "error": null}';
-      case '5 < 5':
-        return '{"val": "false", "type": "b", "error": null}';
-      case '5 == 5':
-        return '{"val": "true", "type": "b", "error": null}';
-      case '5 == 3':
-        return '{"val": "false", "type": "b", "error": null}';
-      case '"hello" == "hello"':
-        return '{"val": "true", "type": "b", "error": null}';
-      case '"hello" == "world"':
-        return '{"val": "false", "type": "b", "error": null}';
-      case '5 != 3':
-        return '{"val": "true", "type": "b", "error": null}';
-      case '5 != 5':
-        return '{"val": "false", "type": "b", "error": null}';
-      case '"hello" != "world"':
-        return '{"val": "true", "type": "b", "error": null}';
-      case '"hello" != "hello"':
-        return '{"val": "false", "type": "b", "error": null}';
-      case 'true && true':
-        return '{"val": "true", "type": "b", "error": null}';
-      case 'true && false':
-        return '{"val": "false", "type": "b", "error": null}';
-      case 'false && true':
-        return '{"val": "false", "type": "b", "error": null}';
-      case 'false && false':
-        return '{"val": "false", "type": "b", "error": null}';
-      case 'true || true':
-        return '{"val": "true", "type": "b", "error": null}';
-      case 'true || false':
-        return '{"val": "true", "type": "b", "error": null}';
-      case 'false || true':
-        return '{"val": "true", "type": "b", "error": null}';
-      case 'false || false':
-        return '{"val": "false", "type": "b", "error": null}';
-      case 'true ? 42 : 0':
-        return '{"val": "42", "type": "i", "error": null}';
-      case 'false ? 42 : 0':
-        return '{"val": "0", "type": "i", "error": null}';
-      case '5 > 3 ? "yes" : "no"':
-        return '{"val": "yes", "type": "s", "error": null}';
-      case '2 > 3 ? "yes" : "no"':
-        return '{"val": "no", "type": "s", "error": null}';
-      case '(5 > 3 && 2 < 4) ? "both true" : "not both"':
-        return '{"val": "both true", "type": "s", "error": null}';
-      case '(5 > 3 && 2 > 4) ? "both true" : "not both"':
-        return '{"val": "not both", "type": "s", "error": null}';
-
-      // Complex expressions
-      case 'sin(pi/4) * cos(pi/4)':
-        return '{"val": "0.5", "type": "f", "error": null}';
-      case 'sqrt(pow(3, 2) + pow(4, 2))':
-        return '{"val": "5", "type": "f", "error": null}';
-      case 'abs(-sin(pi/6))':
-        return '{"val": "0.5", "type": "f", "error": null}';
-      case 'string(round(3.7)) + " items"':
-        return '{"val": "4 items", "type": "s", "error": null}';
-      case 'length("test") * 2':
-        return '{"val": "8", "type": "i", "error": null}';
-
-      // Error cases
-      case '2 + + 3':
-        return '{"val": null, "type": null, "error": "Syntax error: unexpected operator"}';
-      case 'undefined_function(5)':
-        return '{"val": null, "type": null, "error": "Unknown function: undefined_function"}';
-
-      default:
-        return '{"val": null, "type": null, "error": "Unknown equation: $equation"}';
-    }
-  }
-}
+import 'package:parsec_web/parsec_web.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  // Set up the mock platform implementation
-  setUp(() {
-    ParsecPlatform.instance = MockParsecPlatform();
-  });
+  // Note: Platform implementation is configured in flutter_test_config.dart
+  // for test environment compatibility
 
-  group('Parsec Library', () {
+  group('Parsec Library with WebAssembly Backend', () {
     late Parsec parsec;
 
     setUpAll(() async {
       parsec = Parsec();
-      // Wait a moment for initialization if needed
-      await Future.delayed(Duration(milliseconds: 100));
+      // Wait for WebAssembly initialization - critical for Web platform
+      await Future.delayed(const Duration(milliseconds: 500));
     });
 
-    group('when initializing the parsec library', () {
-      test('should create a valid Parsec instance', () {
+    group('when initializing the parsec web library', () {
+      test('should create a valid Parsec instance with Web backend', () {
         expect(parsec, isA<Parsec>());
+        expect(ParsecPlatform.instance, isA<ParsecPlatform>());
       });
     });
 
-    group('when evaluating arithmetic expressions', () {
+    group('when evaluating arithmetic expressions with WebAssembly backend', () {
       group('after setting up basic mathematical operations', () {
         test('should perform addition correctly', () async {
           expect(await parsec.eval('2 + 3'), equals(5));
@@ -509,7 +147,7 @@ void main() {
       });
     });
 
-    group('when evaluating trigonometric functions', () {
+    group('when evaluating trigonometric functions with WebAssembly backend', () {
       group('after setting up trigonometric calculations', () {
         test('should calculate sine correctly', () async {
           expect(await parsec.eval('sin(0)'), equals(0));
@@ -560,7 +198,7 @@ void main() {
       });
     });
 
-    group('when evaluating logarithmic and exponential functions', () {
+    group('when evaluating logarithmic and exponential functions with WebAssembly backend', () {
       group('after setting up logarithmic calculations', () {
         test('should calculate natural logarithm', () async {
           expect(await parsec.eval('ln(1)'), equals(0));
@@ -601,7 +239,7 @@ void main() {
       });
     });
 
-    group('when evaluating string functions', () {
+    group('when evaluating string functions with WebAssembly backend', () {
       group('after setting up string literals', () {
         test('should handle string literals correctly', () async {
           expect(await parsec.eval('"Hello World"'), equals('Hello World'));
@@ -670,7 +308,7 @@ void main() {
       });
     });
 
-    group('when evaluating boolean and comparison operations', () {
+    group('when evaluating boolean and comparison operations with WebAssembly backend', () {
       group('after setting up boolean values', () {
         test('should handle boolean literals', () async {
           expect(await parsec.eval('true'), equals(true));
@@ -737,7 +375,7 @@ void main() {
       });
     });
 
-    group('when evaluating complex expressions', () {
+    group('when evaluating complex expressions with WebAssembly backend', () {
       group('after setting up multi-function combinations', () {
         test('should handle complex mathematical expressions', () async {
           expect(await parsec.eval('sin(pi/4) * cos(pi/4)'), closeTo(0.5, 0.0001));
@@ -752,7 +390,7 @@ void main() {
       });
     });
 
-    group('when handling error cases', () {
+    group('when handling error cases with WebAssembly backend', () {
       group('after encountering invalid input', () {
         test('should handle empty equations gracefully', () async {
           expect(
@@ -790,6 +428,76 @@ void main() {
           // sqrt(-1) should return NaN, not throw
           final result = await parsec.eval('sqrt(-1)');
           expect(result, isNaN);
+        });
+      });
+    });
+
+    group('when testing WebAssembly-specific functionality', () {
+      group('after setting up advanced mathematical functions', () {
+        test('should handle floating point remainder operations', () async {
+          expect(await parsec.eval('fmod(10.3, 3.1)'), closeTo(1.0, 0.01));
+          expect(await parsec.eval('remainder(10.3, 3.1)'), closeTo(1.0, 0.01));
+        });
+
+        test('should handle aggregation functions', () async {
+          expect(await parsec.eval('sum(1, 2, 3)'), equals(6));
+          expect(await parsec.eval('sum(0)'), equals(0));
+          expect(await parsec.eval('sum(-1, 1)'), equals(0));
+          expect(await parsec.eval('avg(2, 4, 6)'), equals(4));
+          expect(await parsec.eval('avg(1, 1, 1)'), equals(1));
+        });
+
+        test('should handle vector operations', () async {
+          expect(await parsec.eval('hypot(3, 4)'), equals(5));
+          expect(await parsec.eval('hypot(0, 0)'), equals(0));
+          expect(await parsec.eval('hypot(1, 1)'), closeTo(1.414213562373095, 0.0001));
+        });
+
+        test('should handle scientific notation', () async {
+          expect(await parsec.eval('1e2'), equals(100));
+          expect(await parsec.eval('2.5e-1'), equals(0.25));
+        });
+
+        test('should handle decimal rounding functions', () async {
+          expect(await parsec.eval('round_decimal(3.14159, 2)'), closeTo(3.14, 0.0001));
+          expect(await parsec.eval('round_decimal(2.71828, 3)'), closeTo(2.718, 0.0001));
+        });
+      });
+
+      group('after setting up unary operators', () {
+        test('should handle unary minus correctly', () async {
+          expect(await parsec.eval('-5'), equals(-5));
+          expect(await parsec.eval('-(3 + 2)'), equals(-5));
+          expect(await parsec.eval('-(-5)'), equals(5));
+        });
+
+        test('should handle unary plus correctly', () async {
+          expect(await parsec.eval('+5'), equals(5));
+          expect(await parsec.eval('+(3 + 2)'), equals(5));
+        });
+      });
+
+      group('after setting up WebAssembly performance validation', () {
+        test('should handle computationally intensive calculations efficiently', () async {
+          // Test that shows WebAssembly performance advantage
+          final startTime = DateTime.now();
+          
+          // Complex nested calculations that would be slower with mock implementation
+          final result1 = await parsec.eval('sqrt(pow(sin(pi/3), 2) + pow(cos(pi/3), 2))');
+          final result2 = await parsec.eval('exp(ln(e * e))');
+          final result3 = await parsec.eval('log10(pow(10, 3))');
+          
+          final endTime = DateTime.now();
+          final duration = endTime.difference(startTime);
+          
+          // Verify results are correct (proving WebAssembly computation)
+          expect(result1, closeTo(1, 0.0001));
+          expect(result2, closeTo(7.389, 0.01));
+          expect(result3, closeTo(3, 0.0001));
+          
+          // Performance assertion - WebAssembly should be fast
+          expect(duration.inMilliseconds, lessThan(1000), 
+                reason: 'WebAssembly should provide fast computation');
         });
       });
     });
