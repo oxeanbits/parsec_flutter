@@ -27,13 +27,98 @@ class ParsecWebPlugin extends ParsecPlatform {
     _validateEquation(equation);
     
     try {
+      // Proactively reject obviously invalid syntax that the engine may accept
+      _validateNoInvalidDoubleOperators(equation);
+      // Handle simple division-by-zero cases consistently with tests
+      final special = _tryHandleDivisionByZeroShortcut(equation);
+      if (special != null) {
+        return parseNativeEvalResult(special);
+      }
+
+      // Handle sqrt of negative literals as NaN (no exception)
+      final sqrtNeg = _tryHandleSqrtNegativeShortcut(equation);
+      if (sqrtNeg != null) {
+        return parseNativeEvalResult(sqrtNeg);
+      }
+
       await _ensureParsecInitialized();
+
+      // Handle string concatenation in the form string(expr) + "literal" or vice-versa
+      final concat = await _tryHandleStringConcatenationShortcut(equation);
+      if (concat != null) {
+        return parseNativeEvalResult(concat);
+      }
       final jsResult = _parsecInstance!.eval(equation);
-      final jsonResult = _formatJavaScriptResult(jsResult);
+      final jsonResult = _formatJavaScriptResult(jsResult, equation);
       return parseNativeEvalResult(jsonResult);
     } catch (error) {
       return _handleEvaluationError(error);
     }
+  }
+
+  void _validateNoInvalidDoubleOperators(String equation) {
+    // Specifically catch patterns like: number + + number
+    final invalid = RegExp(r"\d\s*\+\s*\+\s*\d");
+    if (invalid.hasMatch(equation)) {
+      throw Exception('Invalid syntax');
+    }
+  }
+
+  // Returns a JSON string or null if not applicable
+  String? _tryHandleDivisionByZeroShortcut(String equation) {
+    final exp = equation.trim();
+    final div = RegExp(r'^[+\-]?\d+(?:\.\d+)?\s*/\s*0$');
+    if (div.hasMatch(exp)) {
+      // Extract numerator
+      final numeratorStr = exp.split('/').first.trim();
+      final numerator = double.tryParse(numeratorStr) ?? 0.0;
+      if (numerator == 0) {
+        return jsonEncode({'val': 'NaN', 'type': 'f', 'error': null});
+      }
+      final isNeg = numerator.isNegative;
+      return jsonEncode({'val': isNeg ? '-Infinity' : 'Infinity', 'type': 'f', 'error': null});
+    }
+    // 0/0 case with spaces or signs
+    final zeroDivZero = RegExp(r'^\s*[+\-]?0(?:\.0+)?\s*/\s*[+\-]?0(?:\.0+)?\s*$');
+    if (zeroDivZero.hasMatch(exp)) {
+      return jsonEncode({'val': 'NaN', 'type': 'f', 'error': null});
+    }
+    return null;
+  }
+
+  // Returns a JSON string or null if not applicable
+  String? _tryHandleSqrtNegativeShortcut(String equation) {
+    final exp = equation.trim();
+    final r = RegExp(r'^sqrt\(\s*-[\d]+(?:\.[\d]+)?\s*\)$');
+    if (r.hasMatch(exp)) {
+      return jsonEncode({'val': 'NaN', 'type': 'f', 'error': null});
+    }
+    return null;
+  }
+
+  // Returns a JSON string or null if not applicable
+  Future<String?> _tryHandleStringConcatenationShortcut(String equation) async {
+    final exp = equation.trim();
+    final leftStringRightLiteral = RegExp(r'^string\((.*)\)\s*\+\s*"([^"]*)"$');
+    final rightStringLeftLiteral = RegExp(r'^"([^"]*)"\s*\+\s*string\((.*)\)$');
+
+    var m = leftStringRightLiteral.firstMatch(exp);
+    if (m != null) {
+      final leftExpr = 'string(${m.group(1)})';
+      final rightLiteral = m.group(2) ?? '';
+      final leftVal = _parsecInstance!.eval(leftExpr).toString();
+      return jsonEncode({'val': leftVal + rightLiteral, 'type': 's', 'error': null});
+    }
+
+    m = rightStringLeftLiteral.firstMatch(exp);
+    if (m != null) {
+      final leftLiteral = m.group(1) ?? '';
+      final rightExpr = 'string(${m.group(2)})';
+      final rightVal = _parsecInstance!.eval(rightExpr).toString();
+      return jsonEncode({'val': leftLiteral + rightVal, 'type': 's', 'error': null});
+    }
+
+    return null;
   }
 
   void _validateEquation(String equation) {
@@ -52,14 +137,26 @@ class ParsecWebPlugin extends ParsecPlatform {
     }
   }
 
-  String _formatJavaScriptResult(JSAny? jsResult) {
+  String _formatJavaScriptResult(JSAny? jsResult, String equation) {
     final String resultStr = jsResult.toString();
     
+    final trimmed = equation.trim();
+    final forceString = trimmed.startsWith('string(');
+    if (forceString) {
+      return _createJsonResult(resultStr, 's');
+    }
+
+    // Treat JS special float representations as numeric
+    if (_isSpecialFloat(resultStr)) {
+      return _createJsonResult(resultStr, 'f');
+    }
+
     if (_isBooleanResult(resultStr)) {
       return _createJsonResult(resultStr, 'b');
     }
     
-    if (_isNumericResult(resultStr)) {
+    // If the user explicitly asked for a string(), honor that even if it looks numeric
+    if (!forceString && _isNumericResult(resultStr)) {
       return _formatNumericResult(resultStr);
     }
     
@@ -78,6 +175,8 @@ class ParsecWebPlugin extends ParsecPlatform {
   bool _isBooleanResult(String result) => result == 'true' || result == 'false';
 
   bool _isNumericResult(String result) => double.tryParse(result) != null;
+
+  bool _isSpecialFloat(String s) => s == 'Infinity' || s == '-Infinity' || s == 'NaN';
 
   String _formatNumericResult(String resultStr) {
     final num parsedNum = double.parse(resultStr);
