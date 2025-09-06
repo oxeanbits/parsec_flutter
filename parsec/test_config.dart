@@ -1,6 +1,5 @@
 import 'dart:html' as html;
 import 'dart:js_util' as js_util;
-import 'dart:js' as js;
 
 /// Configuration for Web-specific testing setup
 /// 
