@@ -11,17 +11,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:parsec_example/main.dart';
 
 void main() {
-  testWidgets('Verify Platform version', (WidgetTester tester) async {
+  testWidgets('Verify platform info is displayed', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
-    // Verify that platform version is retrieved.
+    // Verify that platform information section is present.
+    expect(find.text('🏗️ Platform Info:'), findsOneWidget);
+
+    // Verify that detailed platform info text is rendered (contains 'Platform:').
     expect(
       find.byWidgetPredicate(
-        (Widget widget) => widget is Text &&
-                           widget.data!.startsWith('Running on:'),
+        (Widget widget) => widget is Text && widget.data != null && widget.data!.contains('Platform:'),
       ),
-      findsOneWidget,
+      findsWidgets,
     );
   });
 }
