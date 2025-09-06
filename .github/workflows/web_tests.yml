@@ -132,14 +132,17 @@ jobs:
       run: |
         cd parsec_web/lib/parsec-web
         npm install
-        npm run test:unit
-        npm run test:integration
+        npm test
     
     - name: Validate WebAssembly module
       run: |
         cd parsec_web/lib/parsec-web
-        file wasm/equations_parser.wasm
-        ls -la wasm/
+        if [ -f wasm/equations_parser.js ]; then
+          file wasm/equations_parser.js
+          ls -la wasm/
+        else
+          echo "❌ WASM glue JS missing at wasm/equations_parser.js" && exit 1
+        fi
     
     - name: Test JavaScript imports
       run: |
