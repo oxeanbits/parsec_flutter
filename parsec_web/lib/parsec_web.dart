@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:js_interop';
+import 'dart:js_util' as js_util;
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:parsec_platform_interface/parsec_platform_interface.dart';
@@ -225,8 +226,7 @@ class ParsecWebPlugin extends ParsecPlatform {
 
   bool _isParseWebLibraryAvailable() {
     try {
-      final globalParsec = web.window['Parsec'];
-      return globalParsec != null;
+      return js_util.hasProperty(web.window, 'Parsec');
     } catch (e) {
       return false;
     }
