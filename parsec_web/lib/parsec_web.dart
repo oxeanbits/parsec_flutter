@@ -28,15 +28,12 @@ class ParsecWebPlugin extends ParsecPlatform {
     _validateEquation(equation);
     
     try {
-      // Proactively reject obviously invalid syntax that the engine may accept
       _validateNoInvalidDoubleOperators(equation);
-      // Handle simple division-by-zero cases consistently with tests
       final special = _tryHandleDivisionByZeroShortcut(equation);
       if (special != null) {
         return parseNativeEvalResult(special);
       }
 
-      // Handle sqrt of negative literals as NaN (no exception)
       final sqrtNeg = _tryHandleSqrtNegativeShortcut(equation);
       if (sqrtNeg != null) {
         return parseNativeEvalResult(sqrtNeg);
@@ -44,7 +41,6 @@ class ParsecWebPlugin extends ParsecPlatform {
 
       await _ensureParsecInitialized();
 
-      // Handle string concatenation in the form string(expr) + "literal" or vice-versa
       final concat = await _tryHandleStringConcatenationShortcut(equation);
       if (concat != null) {
         return parseNativeEvalResult(concat);
@@ -58,7 +54,6 @@ class ParsecWebPlugin extends ParsecPlatform {
   }
 
   void _validateNoInvalidDoubleOperators(String equation) {
-    // Specifically catch patterns like: number + + number
     final invalid = RegExp(r"\d\s*\+\s*\+\s*\d");
     if (invalid.hasMatch(equation)) {
       throw Exception('Invalid syntax');
@@ -140,14 +135,13 @@ class ParsecWebPlugin extends ParsecPlatform {
 
   String _formatJavaScriptResult(JSAny? jsResult, String equation) {
     final String resultStr = jsResult.toString();
-    
     final trimmed = equation.trim();
     final forceString = trimmed.startsWith('string(');
+
     if (forceString) {
       return _createJsonResult(resultStr, 's');
     }
 
-    // Treat JS special float representations as numeric
     if (_isSpecialFloat(resultStr)) {
       return _createJsonResult(resultStr, 'f');
     }
@@ -217,7 +211,6 @@ class ParsecWebPlugin extends ParsecPlatform {
   Future<void> _createAndInitializeParsecInstance() async {
     try {
       _parsecInstance = ParsecJS();
-      // Load the WASM glue JS relative to the wrapper file bundled in this package
       await _parsecInstance!.initialize('../wasm/equations_parser.js').toDart;
     } catch (error) {
       throw Exception('Failed to initialize Parsec WebAssembly module: $error');
@@ -253,20 +246,13 @@ This syncs the prebuilt WASM glue into the package at lib/parsec-web/wasm/.
 /// that wraps the equations-parser WebAssembly module.
 @JS('Parsec')
 extension type ParsecJS._(JSObject _) implements JSObject {
-  /// Create a new Parsec instance
   external ParsecJS();
-  
-  /// Initialize the WebAssembly module
-  /// Returns a Promise that resolves when the module is ready
+
   external JSPromise<JSAny?> initialize(String wasmPath);
-  
-  /// Evaluate a mathematical equation
-  /// Returns the result directly (number, string, or boolean)
+
   external JSAny? eval(String equation);
-  
-  /// Check if the module is ready
+
   external bool isReady();
-  
-  /// Get information about supported functions
+
   external JSObject getSupportedFunctions();
 }

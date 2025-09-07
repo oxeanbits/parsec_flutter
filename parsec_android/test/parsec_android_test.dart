@@ -16,7 +16,6 @@ void main() {
   });
 
   tearDown(() {
-    // Remove the mock to avoid side effects between tests
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, null);
   });

@@ -16,12 +16,12 @@ else
     exit 1
 fi
 
-# Check setup script
-echo "2. Checking setup script..."
-if [ -x "setup_web_assets.sh" ]; then
-    echo "   ✅ Setup script exists and is executable"
+# Check Dart WASM generation script
+echo "2. Checking Dart WASM generation script..."
+if [ -f "parsec_web/bin/generate.dart" ]; then
+    echo "   ✅ Dart WASM generator exists"
 else
-    echo "   ❌ Setup script missing or not executable"
+    echo "   ❌ Dart WASM generator missing at parsec_web/bin/generate.dart"
     exit 1
 fi
 
@@ -29,7 +29,7 @@ echo "3. Checking WASM glue within package..."
 if [ -f "parsec_web/lib/parsec-web/wasm/equations_parser.js" ]; then
     echo "   ✅ WASM glue present"
 else
-    echo "   ⚠️  WASM glue missing - run ./setup_web_assets.sh"
+    echo "   ⚠️  WASM glue missing - run: cd parsec_web && dart bin/generate.dart"
 fi
 
 # Check index.html
@@ -74,11 +74,12 @@ echo ""
 echo "🎯 VALIDATION SUMMARY:"
 echo "✅ Core parsec platform implementation: Complete"
 echo "✅ parsec-web assets bundled in package: Complete"  
-echo "✅ WebAssembly setup infrastructure: Complete (package-based)"
+echo "✅ WebAssembly setup infrastructure: Complete (Dart-based generation)"
 
 echo ""
 echo "🚀 READY TO TEST:"
-echo "   cd parsec/example && flutter run -d chrome"
+echo "   1. Generate WASM files: cd parsec_web && dart bin/generate.dart"
+echo "   2. Run web example: cd parsec/example && flutter run -d chrome"
 
 echo ""
 echo "📊 Platform-Based Delegation:"
