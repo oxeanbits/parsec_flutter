@@ -2,24 +2,3 @@
 /local
 .aider*
 .claude/
-
-# Ignore generated WebAssembly outputs by default
-**/wasm/**
-# But keep the prebuilt artifacts shipped with the web submodule
-!parsec_web/lib/parsec-web/wasm/
-!parsec_web/lib/parsec-web/wasm/equations_parser.js
-!parsec_web/lib/parsec-web/wasm/equations_parser.wasm
-
-# Dart/Flutter build artifacts
-**/.dart_tool/**
-**/build/**
-**/.packages
-
-# Lockfiles: keep for apps/examples, ignore in packages
-**/pubspec.lock
-!parsec/example/pubspec.lock
-
-# IDE/editor files
-.idea/
-.vscode/
-.DS_Store
