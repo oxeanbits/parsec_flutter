@@ -42,10 +42,10 @@ jobs:
       with:
         chrome-version: stable
     
-    - name: Setup Web Assets
+    - name: Generate Web Assets
       run: |
-        chmod +x setup_web_assets.sh
-        ./setup_web_assets.sh
+        cd parsec_web
+        dart bin/generate.dart
     
     - name: Get Flutter dependencies
       run: |
@@ -63,11 +63,6 @@ jobs:
         cd parsec
         flutter analyze --no-fatal-infos
     
-    - name: Build WebAssembly module
-      run: |
-        cd parsec_web/lib/parsec-web
-        chmod +x build.sh
-        ./build.sh
     
     - name: Run parsec_web JavaScript tests (Node.js)
       run: |
@@ -125,10 +120,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y emscripten
     
-    - name: Setup Web Assets
+    - name: Generate Web Assets
       run: |
-        chmod +x setup_web_assets.sh
-        ./setup_web_assets.sh
+        cd parsec_web
+        dart bin/generate.dart
     
     - name: Test parsec-web npm package
       run: |
