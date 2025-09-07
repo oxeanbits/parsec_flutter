@@ -9,15 +9,9 @@ void main() {
   const MethodChannel channel = MethodChannel('parsec_android');
 
   setUp(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
+    channel.setMockMethodCallHandler((MethodCall methodCall) async {
       return null;
     });
-  });
-
-  tearDown(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(channel, null);
   });
 
   test('registers instance', () {
