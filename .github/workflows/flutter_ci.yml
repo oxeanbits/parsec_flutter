@@ -59,3 +59,9 @@ jobs:
           flutter pub get
           flutter analyze --no-fatal-infos
 
+      - name: Analyze parsec_web
+        run: |
+          cd parsec_web
+          flutter pub get
+          flutter analyze --no-fatal-infos
+

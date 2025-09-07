@@ -20,6 +20,12 @@ This repository follows a federated Flutter plugin architecture:
 
 ## Key Commands
 
+### Web Asset Generation
+```bash
+# Generate WebAssembly files for parsec_web (required for web platform)
+cd parsec_web && dart bin/generate.dart
+```
+
 ### Testing
 ```bash
 # Test all packages from their respective directories
@@ -28,6 +34,9 @@ cd parsec_android && flutter test
 cd parsec_linux && flutter test
 cd parsec_windows && flutter test
 cd parsec_platform_interface && flutter test
+
+# Web platform testing (requires WASM files)
+cd parsec && flutter test --platform chrome
 ```
 
 ### Linting & Analysis
@@ -170,14 +179,43 @@ pubspec.yaml                 # Platform-specific dependencies
 - Local path dependencies are used for development (see pubspec.yaml files)
 - No iOS/macOS/Web support in main plugin (separate web library exists)
 
+## Web Platform Development
+
+The **parsec_web** package uses WebAssembly compiled from C++ for high performance:
+
+### Prerequisites
+- **Emscripten**: Required to compile C++ to WebAssembly
+  ```bash
+  # Ubuntu/Debian
+  sudo apt-get install emscripten
+  
+  # Or install via emsdk
+  git clone https://github.com/emscripten-core/emsdk.git
+  cd emsdk && ./emsdk install latest && ./emsdk activate latest
+  source ./emsdk_env.sh
+  ```
+
+### Development Workflow
+1. **Generate WASM files**: `cd parsec_web && dart bin/generate.dart`
+2. **Test functionality**: `cd parsec_web/lib/parsec-web && npm test`
+3. **Integration testing**: `cd parsec && flutter test --platform chrome`
+
+### What `dart bin/generate.dart` does:
+- Validates parsec-web submodule exists
+- Compiles C++ equations-parser (38 source files) to WebAssembly using Emscripten
+- Generates `wasm/equations_parser.js` (WASM glue + binary, ~635KB)
+- Verifies JavaScript wrapper and WASM files are present
+- Provides user-friendly output and next steps
+
 ## When Working on This Codebase
 
-1. **Always test across platforms** - changes to interface affect all implementations
-2. **Maintain version consistency** - keep platform interface versions aligned
-3. **Follow Flutter plugin conventions** - use established patterns for method channels
-4. **Preserve JSON contract** - native libraries expect specific response format
-5. **Update documentation** - especially README.md examples if API changes
-6. **Run analysis** - ensure all packages pass `flutter analyze` before commits
+1. **Generate WASM first** - run `cd parsec_web && dart bin/generate.dart` before web testing
+2. **Always test across platforms** - changes to interface affect all implementations
+3. **Maintain version consistency** - keep platform interface versions aligned
+4. **Follow Flutter plugin conventions** - use established patterns for method channels
+5. **Preserve JSON contract** - native libraries expect specific response format
+6. **Update documentation** - especially README.md examples if API changes
+7. **Run analysis** - ensure all packages pass `flutter analyze` before commits
 
 ## Pull Request Guidance
 

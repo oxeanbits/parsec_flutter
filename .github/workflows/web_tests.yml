@@ -1,0 +1,148 @@
+name: Web Integration Tests
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  web_tests:
+    name: Web Tests (WebAssembly)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    strategy:
+      matrix:
+        flutter_version: [3.19.0, 3.24.0]
+        
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ matrix.flutter_version }}
+        channel: stable
+        cache: true
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y emscripten
+    
+    - name: Install Chrome for Web testing
+      uses: browser-actions/setup-chrome@v1
+      with:
+        chrome-version: stable
+    
+    - name: Generate Web Assets
+      run: |
+        cd parsec_web
+        dart bin/generate.dart
+    
+    - name: Get Flutter dependencies
+      run: |
+        cd parsec_platform_interface && flutter pub get
+        cd ../parsec_web && flutter pub get
+        cd ../parsec && flutter pub get
+    
+    - name: Analyze parsec_web package
+      run: |
+        cd parsec_web
+        flutter analyze --no-fatal-infos
+    
+    - name: Analyze main parsec package
+      run: |
+        cd parsec
+        flutter analyze --no-fatal-infos
+    
+    
+    - name: Run parsec_web JavaScript tests (Node.js)
+      run: |
+        cd parsec_web/lib/parsec-web
+        npm install
+        npm test
+    
+    - name: Run Flutter Web integration tests
+      run: |
+        cd parsec
+        flutter test --platform chrome test/parsec_test.dart
+    
+    - name: Run Web-specific integration tests
+      run: |
+        cd parsec
+        flutter test --platform chrome test/parsec_web_integration_test.dart
+    
+    - name: Build Web example (validation)
+      run: |
+        cd parsec/example
+        flutter build web --release
+    
+    - name: Upload test artifacts
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: web-test-artifacts-${{ matrix.flutter_version }}
+        path: |
+          parsec/coverage/
+          parsec_web/lib/parsec-web/coverage/
+          parsec/test-results.xml
+        retention-days: 3
+
+  web_compatibility:
+    name: Web Compatibility Tests
+    runs-on: ubuntu-latest
+    needs: web_tests
+    timeout-minutes: 10
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: 3.24.0
+        channel: stable
+        cache: true
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y emscripten
+    
+    - name: Generate Web Assets
+      run: |
+        cd parsec_web
+        dart bin/generate.dart
+    
+    - name: Test parsec-web npm package
+      run: |
+        cd parsec_web/lib/parsec-web
+        npm install
+        npm test
+    
+    - name: Validate WebAssembly module
+      run: |
+        cd parsec_web/lib/parsec-web
+        if [ -f wasm/equations_parser.js ]; then
+          file wasm/equations_parser.js
+          ls -la wasm/
+        else
+          echo "❌ WASM glue JS missing at wasm/equations_parser.js" && exit 1
+        fi
+    
+    - name: Test JavaScript imports
+      run: |
+        cd parsec_web/lib/parsec-web
+        node -e "const E = require('./index.cjs'); console.log('✅ CommonJS works')"
+        node --input-type=module -e "import('./index.mjs').then(()=>console.log('✅ ES6 works'))"
