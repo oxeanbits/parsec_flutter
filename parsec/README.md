@@ -35,7 +35,8 @@ The wrapper dynamically imports the WASM glue from `packages/parsec_web/parsec-w
 If the WASM glue is missing during local development, run:
 
 ```bash
-./setup_web_assets.sh
+cd parsec_web
+dart bin/generate.dart
 ```
 
 ## Requirements
@@ -197,13 +198,14 @@ flutter run -d windows
 
 ### Web Setup (First Time Only)
 
-If you're testing the web platform for the first time, ensure the WASM glue is present:
+If you're testing the web platform for the first time, ensure the WASM files are generated:
 
 ```bash
-./setup_web_assets.sh
+cd parsec_web
+dart bin/generate.dart
 ```
 
-This syncs the necessary WebAssembly files into the `parsec_web` package so they can be served from `packages/parsec_web/parsec-web/...`.
+This builds the necessary WebAssembly files in the `parsec_web` package so they can be served from `packages/parsec_web/parsec-web/...`.
 
 ### Platform-Specific Implementation
 
@@ -238,8 +240,9 @@ final result = await parsec.eval('2 + 3 * sin(pi/2)'); // Should return 5.0 on a
 # Ensure your app's web/index.html includes the wrapper:
 # <script type="module" src="packages/parsec_web/parsec-web/js/equations_parser_wrapper.js"></script>
 
-# Run the web setup script to ensure WASM glue is present
-./setup_web_assets.sh
+# Generate WASM files to ensure they are present
+cd parsec_web
+dart bin/generate.dart
 
 # Verify bundled assets
 ls parsec_web/lib/parsec-web/{js,wasm}/
@@ -274,8 +277,8 @@ flutter create --platforms=linux,windows .
 
 #### Tests failing
 ```bash
-# Run validation script to check setup
-./validate_integration.sh
+# Generate WASM files first for web platform
+cd parsec_web && dart bin/generate.dart
 
 # Check individual components
 flutter test parsec/
@@ -319,8 +322,8 @@ See [WEB_TESTING.md](WEB_TESTING.md) for detailed testing documentation.
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
-4. Run tests: `flutter test`
-5. Run validation: `./validate_integration.sh`
+4. Generate WASM files for web: `cd parsec_web && dart bin/generate.dart`
+5. Run tests: `flutter test`
 6. Commit your changes (`git commit -m 'Add amazing feature'`)
 7. Push to the branch (`git push origin feature/amazing-feature`)
 8. Open a Pull Request
