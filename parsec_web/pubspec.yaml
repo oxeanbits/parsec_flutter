@@ -31,3 +31,6 @@ flutter:
       web:
         pluginClass: ParsecWebPlugin
         fileName: parsec_web.dart
+
+executables:
+  generate: generate
