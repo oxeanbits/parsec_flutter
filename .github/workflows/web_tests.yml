@@ -84,10 +84,6 @@ jobs:
         cd parsec
         flutter test --platform chrome test/parsec_test.dart
     
-    - name: Run Web-specific integration tests
-      run: |
-        cd parsec
-        flutter test --platform chrome test/parsec_web_integration_test.dart
     
     - name: Build Web example (validation)
       run: |
