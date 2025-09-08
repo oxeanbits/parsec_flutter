@@ -210,8 +210,35 @@ This builds the necessary WebAssembly files in the `parsec_web` package so they 
 ### Platform-Specific Implementation
 
 - **Web**: Uses WebAssembly through the `parsec-web` JavaScript library for optimal performance
+  - Utilizes `evalRaw()` function for direct C++ JSON output, ensuring platform consistency
+  - Bypasses JavaScript type conversion for cleaner data flow: C++ → JSON → Dart
 - **Android/Linux/Windows**: Uses Method Channels to communicate with native C++ implementations
 - **iOS/macOS**: Not yet supported
+
+### Technical Implementation Details
+
+#### Web Platform Architecture
+
+The web implementation has been optimized for performance and consistency:
+
+```
+Flutter Dart Code
+       ↓
+parsec_web Platform Channel
+       ↓
+JavaScript evalRaw() Function
+       ↓
+WebAssembly (C++ equations-parser)
+       ↓
+Raw JSON Response
+```
+
+**Key Features:**
+- **Direct JSON Flow**: Uses `evalRaw()` to get raw C++ JSON output without JavaScript type conversion
+- **Platform Consistency**: All platforms now receive identical JSON format from C++ 
+- **Simplified Architecture**: Eliminated complex type normalization and conversion layers
+- **Better Performance**: Direct data path reduces processing overhead
+- **KISS Principle**: Much cleaner codebase with 150+ lines of complex code removed
 
 ## Performance
 

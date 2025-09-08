@@ -207,6 +207,13 @@ The **parsec_web** package uses WebAssembly compiled from C++ for high performan
 - Verifies JavaScript wrapper and WASM files are present
 - Provides user-friendly output and next steps
 
+### Web Platform Architecture
+
+**parsec_web** uses `evalRaw()` function for direct C++ JSON output:
+- **Data flow**: Dart → `evalRaw()` → WebAssembly → Raw JSON → Dart
+- **Platform consistency**: All platforms receive identical JSON from C++
+- **Simplified code**: Eliminated complex type conversion layers
+
 ## When Working on This Codebase
 
 1. **Generate WASM first** - run `cd parsec_web && dart bin/generate.dart` before web testing
