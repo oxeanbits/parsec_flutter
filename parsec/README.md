@@ -168,11 +168,6 @@ cd parsec_windows
 flutter test
 ```
 
-#### Integration Validation
-```bash
-# From repository root
-./validate_integration.sh
-```
 
 ### Manual Testing
 
