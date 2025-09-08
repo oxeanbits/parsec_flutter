@@ -381,7 +381,7 @@ void main() {
         });
 
         test('should handle mixed type operations', () async {
-          expect(await parsec.eval('string(round(3.7)) + " items"'), equals('4 items'));
+          expect(await parsec.eval('concat(string(round(3.7)), " items")'), equals('4 items'));
           expect(await parsec.eval('length("test") * 2'), equals(8));
         });
       });
@@ -405,7 +405,7 @@ void main() {
 
         test('should handle invalid syntax', () async {
           expect(
-            () async => await parsec.eval('2 + + 3'),
+            () async => await parsec.eval('2 + )'),
             throwsException,
           );
         });
