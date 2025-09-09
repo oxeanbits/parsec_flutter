@@ -70,7 +70,16 @@ jobs:
     - name: Analyze main parsec package
       run: |
         cd parsec
+        # Backup original pubspec.yaml
+        cp pubspec.yaml pubspec.yaml.backup
+        
+        # Mark as non-publishable for CI (suppresses path dependency warnings)
+        echo "publish_to: none" >> pubspec.yaml
+        
         flutter analyze --no-fatal-infos
+        
+        # Restore original pubspec.yaml
+        mv pubspec.yaml.backup pubspec.yaml
     
     
     - name: Run parsec_web JavaScript tests (Node.js)
