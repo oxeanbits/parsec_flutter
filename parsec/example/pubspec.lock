@@ -150,41 +150,46 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.3.1"
+    version: "0.4.1"
   parsec_android:
     dependency: transitive
     description:
-      path: "../../parsec_android"
-      relative: true
-    source: path
+      name: parsec_android
+      sha256: a0d14f37dfb34c804a548bab6432cc9397e01099fab594c1ddd38c347fa5b2ce
+      url: "https://pub.dev"
+    source: hosted
     version: "0.4.0"
   parsec_linux:
     dependency: transitive
     description:
-      path: "../../parsec_linux"
-      relative: true
-    source: path
+      name: parsec_linux
+      sha256: "952efa011e3949c3b063e382db9183d95618c3aee8ecea9b7897da9050c44886"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.4.0"
   parsec_platform_interface:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "../../parsec_platform_interface"
-      relative: true
-    source: path
-    version: "0.2.0"
+      name: parsec_platform_interface
+      sha256: "2df010de7a3ead911c19c3a9640650794671f20258e1476a6aaf9ee616eaa9ac"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
   parsec_web:
     dependency: transitive
     description:
-      path: "../../parsec_web"
-      relative: true
-    source: path
+      name: parsec_web
+      sha256: "292312c7e39947f6753d36a069c1a384a267f4486aca6f126cb61a189fefab24"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0"
   parsec_windows:
     dependency: transitive
     description:
-      path: "../../parsec_windows"
-      relative: true
-    source: path
+      name: parsec_windows
+      sha256: "5645000b4a231ffb02a86d1048403abf810240dfff491dc18661e439fe1df81a"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.2.0"
   path:
     dependency: transitive
