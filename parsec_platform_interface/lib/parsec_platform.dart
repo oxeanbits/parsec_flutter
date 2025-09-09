@@ -42,7 +42,18 @@ abstract class ParsecPlatform extends PlatformInterface {
       case 'i':
         return int.parse(val);
       case 'f':
-        return double.parse(val);
+        // Handle special float values from C++
+        switch (val) {
+          case 'inf':
+            return double.infinity;
+          case '-inf':
+            return double.negativeInfinity;
+          case 'nan':
+          case '-nan':
+            return double.nan;
+          default:
+            return double.parse(val);
+        }
       case 'b':
         return val == 'true';
       default:
