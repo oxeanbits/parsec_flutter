@@ -161,7 +161,7 @@ pubspec.yaml                 # Platform-specific dependencies
 
 ## Dependencies & Versioning
 
-- **Platform Interface Version**: Currently ^0.2.0 across all implementations
+- **Platform Interface Version**: Currently ^0.2.1 across all implementations
 - **Flutter Lints**: ^4.0.0 (latest) for strict code quality
 - **Plugin Platform Interface**: ^2.1.8 for base platform functionality
 

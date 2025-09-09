@@ -140,10 +140,10 @@ packages:
     dependency: "direct main"
     description:
       name: parsec_platform_interface
-      sha256: "38d4f9e0d67577f05e4201f6cc0c25389c7899856be18b0173ab19b5009b2acb"
+      sha256: "2df010de7a3ead911c19c3a9640650794671f20258e1476a6aaf9ee616eaa9ac"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0"
+    version: "0.2.1"
   path:
     dependency: transitive
     description:
