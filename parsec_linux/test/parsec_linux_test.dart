@@ -9,7 +9,8 @@ void main() {
   const MethodChannel channel = MethodChannel('parsec_linux');
 
   setUp(() {
-    channel.setMockMethodCallHandler((MethodCall methodCall) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
       return null;
     });
   });
