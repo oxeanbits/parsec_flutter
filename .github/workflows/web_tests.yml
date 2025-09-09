@@ -86,21 +86,19 @@ jobs:
         cp pubspec.yaml pubspec.yaml.backup
         
         # Add dependency overrides to use local packages with WASM files
-        cat >> pubspec.yaml << 'EOF'
-
-dependency_overrides:
-  # Use local packages for CI testing with WASM files
-  parsec_platform_interface:
-    path: ../parsec_platform_interface
-  parsec_web:
-    path: ../parsec_web
-  parsec_android:
-    path: ../parsec_android
-  parsec_linux:
-    path: ../parsec_linux
-  parsec_windows:
-    path: ../parsec_windows
-EOF
+        echo "" >> pubspec.yaml
+        echo "dependency_overrides:" >> pubspec.yaml
+        echo "  # Use local packages for CI testing with WASM files" >> pubspec.yaml
+        echo "  parsec_platform_interface:" >> pubspec.yaml
+        echo "    path: ../parsec_platform_interface" >> pubspec.yaml
+        echo "  parsec_web:" >> pubspec.yaml
+        echo "    path: ../parsec_web" >> pubspec.yaml
+        echo "  parsec_android:" >> pubspec.yaml
+        echo "    path: ../parsec_android" >> pubspec.yaml
+        echo "  parsec_linux:" >> pubspec.yaml
+        echo "    path: ../parsec_linux" >> pubspec.yaml
+        echo "  parsec_windows:" >> pubspec.yaml
+        echo "    path: ../parsec_windows" >> pubspec.yaml
         
         # Get dependencies with overrides
         flutter pub get
