@@ -1,3 +1,10 @@
+## 0.2.1
+
+- Remove export of `parsec_eval_exception.dart` from public API.
+- Simplify NaN case handling in result parsing.
+- Improve cross-platform consistency in native result parsing.
+- Enhance method channel implementation with better error handling.
+
 ## 0.2.0
 
 - Upgrade minimum Dart SDK version to 3.3.0.

@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  parsec_platform_interface: ^0.2.0
+  parsec_platform_interface: ^0.2.1
   parsec_android: ^0.4.0
   parsec_linux: ^0.4.0
   parsec_windows: ^0.2.0
@@ -21,6 +21,10 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^4.0.0
   web: ^0.5.1
+
+dependency_overrides:
+  parsec_platform_interface:
+    path: ../parsec_platform_interface
 
 flutter:
   plugin:
