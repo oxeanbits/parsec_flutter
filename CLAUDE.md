@@ -184,7 +184,7 @@ pubspec.yaml                 # Platform-specific dependencies
 ONLY When prompted with **"draft a pull request"**:
 
 1. **Analyze changes**
-   * Compare everything done on the current branch against `master`/`main` branch of `upstream`.
+   * Run `git diff upstream/main` and check the changes.
    * Summarize all relevant commits, file modifications, and key impacts.
 
 2. **Create a Markdown draft**
