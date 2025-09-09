@@ -8,10 +8,6 @@
 **/build/**
 **/.packages
 
-# Lockfiles: keep for apps/examples, ignore in packages
-**/pubspec.lock
-!parsec/example/pubspec.lock
-
 # IDE/editor files
 .idea/
 .vscode/
