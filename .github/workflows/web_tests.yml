@@ -82,7 +82,34 @@ jobs:
     - name: Run Flutter Web integration tests
       run: |
         cd parsec
+        # Backup original pubspec.yaml for publication
+        cp pubspec.yaml pubspec.yaml.backup
+        
+        # Add dependency overrides to use local packages with WASM files
+        cat >> pubspec.yaml << 'EOF'
+
+dependency_overrides:
+  # Use local packages for CI testing with WASM files
+  parsec_platform_interface:
+    path: ../parsec_platform_interface
+  parsec_web:
+    path: ../parsec_web
+  parsec_android:
+    path: ../parsec_android
+  parsec_linux:
+    path: ../parsec_linux
+  parsec_windows:
+    path: ../parsec_windows
+EOF
+        
+        # Get dependencies with overrides
+        flutter pub get
+        
+        # Run web tests with local packages
         flutter test --platform chrome test/parsec_test.dart
+        
+        # Restore original pubspec.yaml (publication-ready)
+        mv pubspec.yaml.backup pubspec.yaml
     
     
     - name: Build Web example (validation)
