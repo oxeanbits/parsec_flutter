@@ -53,7 +53,7 @@ jobs:
           echo "  parsec_web:" >> pubspec.yaml
           echo "    path: ../parsec_web" >> pubspec.yaml
           flutter pub get
-          flutter analyze --no-fatal-infos
+          flutter analyze --no-fatal-infos --no-pub
           mv pubspec.yaml.backup pubspec.yaml
 
       - name: Analyze parsec_android
