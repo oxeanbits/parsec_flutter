@@ -48,6 +48,7 @@ abstract class ParsecPlatform extends PlatformInterface {
             return double.infinity;
           case '-inf':
             return double.negativeInfinity;
+          case 'nan':
           case '-nan':
             return double.nan;
           default:
