@@ -178,10 +178,9 @@ packages:
   parsec_web:
     dependency: transitive
     description:
-      name: parsec_web
-      sha256: "292312c7e39947f6753d36a069c1a384a267f4486aca6f126cb61a189fefab24"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../parsec_web"
+      relative: true
+    source: path
     version: "0.1.0"
   parsec_windows:
     dependency: transitive
