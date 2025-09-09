@@ -1,4 +1,4 @@
-## 0.4.1
+## 0.5.0
 
 - **NEW: Web Support with WebAssembly** - Added comprehensive web platform support using high-performance WebAssembly compiled from C++
 - **Web Implementation** - Published `parsec_web ^0.1.0` package provides offline-first, client-side equation evaluation for Flutter web applications
