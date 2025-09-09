@@ -52,9 +52,21 @@ jobs:
           echo "    path: ../parsec_windows" >> pubspec.yaml
           echo "  parsec_web:" >> pubspec.yaml
           echo "    path: ../parsec_web" >> pubspec.yaml
+          
+          # Create temporary analysis options for CI to ignore path dependency warnings
+          cp analysis_options.yaml analysis_options.yaml.backup
+          echo "" >> analysis_options.yaml
+          echo "analyzer:" >> analysis_options.yaml
+          echo "  errors:" >> analysis_options.yaml
+          echo "    # Ignore path dependencies in CI (they're intentional for local testing)" >> analysis_options.yaml
+          echo "    invalid_dependency: ignore" >> analysis_options.yaml
+          
           flutter pub get
-          flutter analyze --no-fatal-infos --no-pub
+          flutter analyze --no-fatal-infos
+          
+          # Restore original files
           mv pubspec.yaml.backup pubspec.yaml
+          mv analysis_options.yaml.backup analysis_options.yaml
 
       - name: Analyze parsec_android
         run: |
