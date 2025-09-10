@@ -29,6 +29,19 @@ jobs:
       - name: Flutter version
         run: flutter --version
 
+      - name: Suppress path dependency warnings (pre)
+        run: |
+          set -euo pipefail
+          for dir in parsec parsec_android parsec_linux parsec_windows parsec_web parsec_platform_interface; do
+            f="$dir/pubspec.yaml"
+            if [ -f "$f" ]; then
+              cp "$f" "$f.backup"
+              if ! grep -qE '^\s*publish_to:' "$f"; then
+                printf "\npublish_to: none\n" >> "$f"
+              fi
+            fi
+          done
+
       - name: Analyze parsec_platform_interface
         run: |
           cd parsec_platform_interface
@@ -39,7 +52,6 @@ jobs:
         run: |
           cd parsec
           # Add dependency overrides for CI testing
-          cp pubspec.yaml pubspec.yaml.backup
           echo "" >> pubspec.yaml
           echo "dependency_overrides:" >> pubspec.yaml
           echo "  parsec_platform_interface:" >> pubspec.yaml
@@ -53,62 +65,44 @@ jobs:
           echo "  parsec_web:" >> pubspec.yaml
           echo "    path: ../parsec_web" >> pubspec.yaml
 
-          # Suppresses path dependency warnings
-          echo "publish_to: none" >> pubspec.yaml
-
           flutter pub get
           flutter analyze --no-fatal-infos
-
-          mv pubspec.yaml.backup pubspec.yaml
 
       - name: Analyze parsec_android
         run: |
           cd parsec_android
 
-          # Suppresses path dependency warnings
-          cp pubspec.yaml pubspec.yaml.backup
-          echo "publish_to: none" >> pubspec.yaml
-
           flutter pub get
           flutter analyze --no-fatal-infos
-
-          mv pubspec.yaml.backup pubspec.yaml
 
       - name: Analyze parsec_linux
         run: |
           cd parsec_linux
 
-          # Suppresses path dependency warnings
-          cp pubspec.yaml pubspec.yaml.backup
-          echo "publish_to: none" >> pubspec.yaml
-
           flutter pub get
           flutter analyze --no-fatal-infos
-
-          mv pubspec.yaml.backup pubspec.yaml
 
       - name: Analyze parsec_windows
         run: |
           cd parsec_windows
 
-          # Suppresses path dependency warnings
-          cp pubspec.yaml pubspec.yaml.backup
-          echo "publish_to: none" >> pubspec.yaml
-
           flutter pub get
           flutter analyze --no-fatal-infos
-
-          mv pubspec.yaml.backup pubspec.yaml
 
       - name: Analyze parsec_web
         run: |
           cd parsec_web
 
-          # Suppresses path dependency warnings
-          cp pubspec.yaml pubspec.yaml.backup
-          echo "publish_to: none" >> pubspec.yaml
-
           flutter pub get
           flutter analyze --no-fatal-infos
 
-          mv pubspec.yaml.backup pubspec.yaml
+      - name: Restore pubspec.yaml backups (post)
+        if: always()
+        run: |
+          set -euo pipefail
+          for dir in parsec parsec_android parsec_linux parsec_windows parsec_web parsec_platform_interface; do
+            f="$dir/pubspec.yaml"
+            if [ -f "$f.backup" ]; then
+              mv "$f.backup" "$f"
+            fi
+          done
