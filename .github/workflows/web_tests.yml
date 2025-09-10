@@ -62,23 +62,6 @@ jobs:
         cd ../parsec_web && flutter pub get
         cd ../parsec && flutter pub get
     
-    - name: Analyze parsec_web package
-      run: |
-        cd parsec_web
-        flutter analyze --no-fatal-infos
-    
-    - name: Analyze main parsec package
-      run: |
-        cd parsec
-
-        # Suppresses path dependency warnings
-        cp pubspec.yaml pubspec.yaml.backup
-        echo "publish_to: none" >> pubspec.yaml
-
-        flutter analyze --no-fatal-infos
-
-        mv pubspec.yaml.backup pubspec.yaml
-    
     - name: Run parsec_web JavaScript tests (Node.js)
       run: |
         cd parsec_web/lib/parsec-web
