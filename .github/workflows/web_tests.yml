@@ -74,7 +74,9 @@ jobs:
         # Suppresses path dependency warnings
         cp pubspec.yaml pubspec.yaml.backup
         echo "publish_to: none" >> pubspec.yaml
+
         flutter analyze --no-fatal-infos
+
         mv pubspec.yaml.backup pubspec.yaml
     
     - name: Run parsec_web JavaScript tests (Node.js)
