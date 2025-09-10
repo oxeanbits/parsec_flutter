@@ -70,18 +70,7 @@ jobs:
     - name: Analyze main parsec package
       run: |
         cd parsec
-        # Create temporary analysis options for CI to ignore path dependency warnings
-        cp analysis_options.yaml analysis_options.yaml.backup
-        echo "" >> analysis_options.yaml
-        echo "analyzer:" >> analysis_options.yaml
-        echo "  errors:" >> analysis_options.yaml
-        echo "    # Ignore path dependencies in CI (they're intentional for local testing)" >> analysis_options.yaml
-        echo "    invalid_dependency: ignore" >> analysis_options.yaml
-        
         flutter analyze --no-fatal-infos
-        
-        # Restore original file
-        mv analysis_options.yaml.backup analysis_options.yaml
     
     
     - name: Run parsec_web JavaScript tests (Node.js)
