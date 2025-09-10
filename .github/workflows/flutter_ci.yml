@@ -71,28 +71,24 @@ jobs:
       - name: Analyze parsec_android
         run: |
           cd parsec_android
-
           flutter pub get
           flutter analyze --no-fatal-infos
 
       - name: Analyze parsec_linux
         run: |
           cd parsec_linux
-
           flutter pub get
           flutter analyze --no-fatal-infos
 
       - name: Analyze parsec_windows
         run: |
           cd parsec_windows
-
           flutter pub get
           flutter analyze --no-fatal-infos
 
       - name: Analyze parsec_web
         run: |
           cd parsec_web
-
           flutter pub get
           flutter analyze --no-fatal-infos
 
