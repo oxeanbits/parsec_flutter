@@ -55,59 +55,60 @@ jobs:
 
           # Suppresses path dependency warnings
           echo "publish_to: none" >> pubspec.yaml
+
           flutter pub get
           flutter analyze --no-fatal-infos
+
           mv pubspec.yaml.backup pubspec.yaml
 
       - name: Analyze parsec_android
         run: |
           cd parsec_android
-          # Add dependency overrides for CI testing
+
+          # Suppresses path dependency warnings
           cp pubspec.yaml pubspec.yaml.backup
-          echo "" >> pubspec.yaml
-          echo "dependency_overrides:" >> pubspec.yaml
-          echo "  parsec_platform_interface:" >> pubspec.yaml
-          echo "    path: ../parsec_platform_interface" >> pubspec.yaml
+          echo "publish_to: none" >> pubspec.yaml
+
           flutter pub get
           flutter analyze --no-fatal-infos
+
           mv pubspec.yaml.backup pubspec.yaml
 
       - name: Analyze parsec_linux
         run: |
           cd parsec_linux
-          # Add dependency overrides for CI testing
+
+          # Suppresses path dependency warnings
           cp pubspec.yaml pubspec.yaml.backup
-          echo "" >> pubspec.yaml
-          echo "dependency_overrides:" >> pubspec.yaml
-          echo "  parsec_platform_interface:" >> pubspec.yaml
-          echo "    path: ../parsec_platform_interface" >> pubspec.yaml
+          echo "publish_to: none" >> pubspec.yaml
+
           flutter pub get
           flutter analyze --no-fatal-infos
+
           mv pubspec.yaml.backup pubspec.yaml
 
       - name: Analyze parsec_windows
         run: |
           cd parsec_windows
-          # Add dependency overrides for CI testing
+
+          # Suppresses path dependency warnings
           cp pubspec.yaml pubspec.yaml.backup
-          echo "" >> pubspec.yaml
-          echo "dependency_overrides:" >> pubspec.yaml
-          echo "  parsec_platform_interface:" >> pubspec.yaml
-          echo "    path: ../parsec_platform_interface" >> pubspec.yaml
+          echo "publish_to: none" >> pubspec.yaml
+
           flutter pub get
           flutter analyze --no-fatal-infos
+
           mv pubspec.yaml.backup pubspec.yaml
 
       - name: Analyze parsec_web
         run: |
           cd parsec_web
-          # Add dependency overrides for CI testing
+
+          # Suppresses path dependency warnings
           cp pubspec.yaml pubspec.yaml.backup
-          echo "" >> pubspec.yaml
-          echo "dependency_overrides:" >> pubspec.yaml
-          echo "  parsec_platform_interface:" >> pubspec.yaml
-          echo "    path: ../parsec_platform_interface" >> pubspec.yaml
+          echo "publish_to: none" >> pubspec.yaml
+
           flutter pub get
           flutter analyze --no-fatal-infos
-          mv pubspec.yaml.backup pubspec.yaml
 
+          mv pubspec.yaml.backup pubspec.yaml
