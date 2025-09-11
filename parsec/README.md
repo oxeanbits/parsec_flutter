@@ -202,6 +202,20 @@ dart bin/generate.dart
 
 This builds the necessary WebAssembly files in the `parsec_web` package so they can be served from `packages/parsec_web/parsec-web/...`.
 
+#### Web Dev Prerequisites (for contributors)
+
+Building the WebAssembly bundle locally requires Emscripten:
+
+```bash
+# Ubuntu/Debian
+sudo apt-get install emscripten
+
+# Or install via emsdk
+git clone https://github.com/emscripten-core/emsdk.git
+cd emsdk && ./emsdk install latest && ./emsdk activate latest
+source ./emsdk_env.sh
+```
+
 ### Platform-Specific Implementation
 
 - **Web**: Uses WebAssembly through the `parsec-web` JavaScript library for optimal performance
@@ -326,6 +340,13 @@ flutter test --platform chrome test/parsec_web_integration_test.dart
 
 # Run with coverage
 flutter test --platform chrome --coverage
+```
+
+#### Web JavaScript Library Tests (optional)
+```bash
+# Run JS tests for the parsec-web wrapper/library
+cd parsec_web/lib/parsec-web
+npm test
 ```
 
 ### Automated Testing
