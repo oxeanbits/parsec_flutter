@@ -92,13 +92,3 @@ jobs:
           flutter pub get
           flutter analyze --no-fatal-infos
 
-      - name: Restore pubspec.yaml backups (post)
-        if: always()
-        run: |
-          set -euo pipefail
-          for dir in parsec parsec_android parsec_linux parsec_windows parsec_web parsec_platform_interface; do
-            f="$dir/pubspec.yaml"
-            if [ -f "$f.backup" ]; then
-              mv "$f.backup" "$f"
-            fi
-          done
