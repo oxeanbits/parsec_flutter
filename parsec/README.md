@@ -1,16 +1,54 @@
 # parsec [![package publisher](https://img.shields.io/pub/publisher/parsec.svg)](https://pub.dev/packages/parsec/publisher) [![pub package](https://img.shields.io/pub/v/parsec.svg)](https://pub.dev/packages/parsec)
 
-The multi-platform `parsec` plugin for Flutter to calculate math equations using C++ library.
+The multi-platform `parsec` plugin for Flutter to calculate math equations using C++ library on native platforms and WebAssembly on web.
 
 ## Platform Support
 
 | Android | iOS | Windows | Linux | MacOS | Web |
 | :-----: | :-: | :-----: | :---: | :---: | :-: |
-|   ✔️    | ❌️ |   ✔️    |  ✔️   |  ❌️  | ❌️ |
+|   ✔️    | ❌️ |   ✔️    |  ✔️   |  ❌️  | ✔️  |
+
+## Installation
+
+Add `parsec` as a dependency in your `pubspec.yaml` file:
+
+```yaml
+dependencies:
+  parsec: ^0.3.1  # Use latest version
+```
+
+Then run:
+
+```bash
+flutter pub get
+```
+
+### Web Platform Setup (Additional Step)
+
+For web platform support, include the parsec-web wrapper JS in your app's `web/index.html`:
+
+```html
+<script type="module" src="packages/parsec_web/parsec-web/js/equations_parser_wrapper.js"></script>
+```
+
+The wrapper dynamically imports the WASM glue from `packages/parsec_web/parsec-web/wasm/equations_parser.js`.
+If the WASM glue is missing during local development, run:
+
+```bash
+cd parsec_web
+dart bin/generate.dart
+```
+
+## Requirements
+
+| Platform | Requirements |
+|----------|-------------|
+| **Android** | Android SDK, NDK |
+| **Linux** | GCC/Clang compiler |
+| **Windows** | Visual Studio Build Tools |
+| **Web** | Modern browser with WebAssembly support |
 
 ## Usage
-
-To use this plugin, add `parsec` as a [dependency in your pubspec.yaml file](https://flutter.dev/platform-plugins/).
 
 ### Example
 
@@ -104,3 +142,235 @@ parsec.eval('hoursdiff("2018-01-01", "2018-01-01")')             # result => 0
 - Array functions: **sizeof**, **eye**, **ones**, **zeros**
 - Date functions: **current_date**, **daysdiff**, **hoursdiff**
 - Extra functions: **default_value**
+
+## Testing
+
+### Running Automated Tests
+
+#### Main Package Tests
+```bash
+cd parsec
+flutter test
+```
+
+#### Platform-Specific Tests
+```bash
+# Android implementation
+cd parsec_android
+flutter test
+
+# Linux implementation  
+cd parsec_linux
+flutter test
+
+# Windows implementation
+cd parsec_windows
+flutter test
+```
+
+
+### Manual Testing
+
+#### Web Platform (WebAssembly)
+```bash
+cd parsec/example
+flutter run -d chrome
+```
+
+#### Native Platforms
+```bash
+cd parsec/example
+
+# Linux
+flutter run -d linux
+
+# Android (with device connected)
+flutter run -d android
+
+# Windows (on Windows machine)  
+flutter run -d windows
+```
+
+### Web Setup (First Time Only)
+
+If you're testing the web platform for the first time, ensure the WASM files are generated:
+
+```bash
+cd parsec_web
+dart bin/generate.dart
+```
+
+This builds the necessary WebAssembly files in the `parsec_web` package so they can be served from `packages/parsec_web/parsec-web/...`.
+
+#### Web Dev Prerequisites (for contributors)
+
+Building the WebAssembly bundle locally requires Emscripten:
+
+```bash
+# Ubuntu/Debian
+sudo apt-get install emscripten
+
+# Or install via emsdk
+git clone https://github.com/emscripten-core/emsdk.git
+cd emsdk && ./emsdk install latest && ./emsdk activate latest
+source ./emsdk_env.sh
+```
+
+### Platform-Specific Implementation
+
+- **Web**: Uses WebAssembly through the `parsec-web` JavaScript library for optimal performance
+  - Utilizes `evalRaw()` function for direct C++ JSON output, ensuring platform consistency
+  - Bypasses JavaScript type conversion for cleaner data flow: C++ → JSON → Dart
+- **Android/Linux/Windows**: Uses Method Channels to communicate with native C++ implementations
+- **iOS/macOS**: Not yet supported
+
+### Technical Implementation Details
+
+#### Web Platform Architecture
+
+The web implementation has been optimized for performance and consistency:
+
+```
+Flutter Dart Code
+       ↓
+parsec_web Platform Channel
+       ↓
+JavaScript evalRaw() Function
+       ↓
+WebAssembly (C++ equations-parser)
+       ↓
+Raw JSON Response
+```
+
+**Key Features:**
+- **Direct JSON Flow**: Uses `evalRaw()` to get raw C++ JSON output without JavaScript type conversion
+- **Platform Consistency**: All platforms now receive identical JSON format from C++ 
+- **Simplified Architecture**: Eliminated complex type normalization and conversion layers
+- **Better Performance**: Direct data path reduces processing overhead
+- **KISS Principle**: Much cleaner codebase with 150+ lines of complex code removed
+
+## Performance
+
+| Platform | Implementation | Typical Performance | Network Required |
+|----------|---------------|-------------------|------------------|
+| **Web** | WebAssembly | ~1-10ms | No (offline) |
+| **Android** | Method Channels + C++ | ~5-20ms | No (offline) |
+| **Linux** | Method Channels + C++ | ~5-20ms | No (offline) |
+| **Windows** | Method Channels + C++ | ~5-20ms | No (offline) |
+
+### Expected Behavior
+
+The same equation should produce identical results across all supported platforms:
+
+```dart
+final parsec = Parsec();
+final result = await parsec.eval('2 + 3 * sin(pi/2)'); // Should return 5.0 on all platforms
+```
+
+## Troubleshooting
+
+### Web Platform Issues
+
+#### "parsec-web JavaScript library not found"
+```bash
+# Ensure your app's web/index.html includes the wrapper:
+# <script type="module" src="packages/parsec_web/parsec-web/js/equations_parser_wrapper.js"></script>
+
+# Generate WASM files to ensure they are present
+cd parsec_web
+dart bin/generate.dart
+
+# Verify bundled assets
+ls parsec_web/lib/parsec-web/{js,wasm}/
+```
+
+#### WebAssembly module fails to load
+- Ensure your browser supports WebAssembly (all modern browsers do)
+- Check browser console for detailed error messages
+- Try hard refresh (Ctrl+Shift+R) to clear cache
+
+### Native Platform Issues
+
+#### Build errors on Android
+```bash
+# Ensure NDK is installed
+flutter doctor
+
+# Clean and rebuild
+flutter clean
+flutter pub get
+flutter build android
+```
+
+#### Build errors on Linux/Windows
+```bash
+# Ensure proper build tools are installed
+flutter doctor
+
+# Verify platform is enabled
+flutter create --platforms=linux,windows .
+```
+
+#### Tests failing
+```bash
+# Generate WASM files first for web platform
+cd parsec_web && dart bin/generate.dart
+
+# Check individual components
+flutter test parsec/
+flutter test parsec_android/
+flutter test parsec_linux/
+flutter test parsec_windows/
+flutter test --platform chrome parsec/  # Web-specific tests
+```
+
+## Web Testing (WebAssembly Integration)
+
+The Web platform uses **real WebAssembly** compiled from the same C++ equations-parser library used by native platforms, ensuring true cross-platform consistency.
+
+### Running Web Tests
+
+```bash
+# Run all Web integration tests
+cd parsec
+flutter test --platform chrome
+
+# Run specific Web integration tests
+flutter test --platform chrome test/parsec_web_integration_test.dart
+
+# Run with coverage
+flutter test --platform chrome --coverage
+```
+
+#### Web JavaScript Library Tests (optional)
+```bash
+# Run JS tests for the parsec-web wrapper/library
+cd parsec_web/lib/parsec-web
+npm test
+```
+
+### Automated Testing
+
+GitHub Actions automatically runs comprehensive Web tests:
+
+- **Multi-Flutter Versions**: Tests against Flutter 3.19.0 and 3.24.0  
+- **Browser Testing**: Chrome-based automated testing
+- **Performance Benchmarks**: WebAssembly efficiency validation
+- **Cross-Platform Consistency**: Identical results across all platforms
+
+See [WEB_TESTING.md](WEB_TESTING.md) for detailed testing documentation.
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Generate WASM files for web: `cd parsec_web && dart bin/generate.dart`
+5. Run tests: `flutter test`
+6. Commit your changes (`git commit -m 'Add amazing feature'`)
+7. Push to the branch (`git push origin feature/amazing-feature`)
+8. Open a Pull Request
+
+## License
+
+This project is licensed under the Apache-2.0 license - see the [LICENSE](LICENSE) file for details.

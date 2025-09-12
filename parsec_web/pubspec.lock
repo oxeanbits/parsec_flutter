@@ -41,14 +41,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.0"
-  cupertino_icons:
-    dependency: "direct main"
-    description:
-      name: cupertino_icons
-      sha256: e35129dc44c9118cee2a5603506d823bab99c68393879edb440e0090d07586be
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.5"
   fake_async:
     dependency: transitive
     description:
@@ -66,22 +58,22 @@ packages:
     dependency: "direct dev"
     description:
       name: flutter_lints
-      sha256: aeb0b80a8b3709709c9cc496cdc027c5b3216796bc0af0ce1007eaf24464fd4c
+      sha256: "3f41d009ba7172d5ff9be5f6e6e6abb4300e263aab8866d2a0842ed2a70f8f0c"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "4.0.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
     source: sdk
     version: "0.0.0"
   flutter_web_plugins:
-    dependency: transitive
+    dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
   js:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: js
       sha256: c1b2e9b5ea78c45e1a0788d29606ba27dc5f71f019f32ca5140f61ef071838cf
@@ -116,10 +108,10 @@ packages:
     dependency: transitive
     description:
       name: lints
-      sha256: "5e4a9cd06d447758280a8ac2405101e0e2094d2a1dbdd3756aec3fe7775ba593"
+      sha256: "976c774dd944a42e83e2467f4cc670daef7eed6295b10b36ae8c85bcbf828235"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "4.0.0"
   matcher:
     dependency: transitive
     description:
@@ -144,52 +136,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.15.0"
-  parsec:
-    dependency: "direct main"
-    description:
-      path: ".."
-      relative: true
-    source: path
-    version: "0.4.1"
-  parsec_android:
-    dependency: transitive
-    description:
-      name: parsec_android
-      sha256: a0d14f37dfb34c804a548bab6432cc9397e01099fab594c1ddd38c347fa5b2ce
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0"
-  parsec_linux:
-    dependency: transitive
-    description:
-      name: parsec_linux
-      sha256: "952efa011e3949c3b063e382db9183d95618c3aee8ecea9b7897da9050c44886"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0"
   parsec_platform_interface:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: parsec_platform_interface
       sha256: "2df010de7a3ead911c19c3a9640650794671f20258e1476a6aaf9ee616eaa9ac"
       url: "https://pub.dev"
     source: hosted
     version: "0.2.1"
-  parsec_web:
-    dependency: transitive
-    description:
-      path: "../../parsec_web"
-      relative: true
-    source: path
-    version: "0.1.0"
-  parsec_windows:
-    dependency: transitive
-    description:
-      name: parsec_windows
-      sha256: "5645000b4a231ffb02a86d1048403abf810240dfff491dc18661e439fe1df81a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.0"
   path:
     dependency: transitive
     description:
@@ -276,7 +230,7 @@ packages:
     source: hosted
     version: "14.3.0"
   web:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: web
       sha256: "97da13628db363c635202ad97068d47c5b8aa555808e7a9411963c533b449b27"

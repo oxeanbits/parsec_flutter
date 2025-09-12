@@ -1,0 +1,33 @@
+# Ignore build artifacts and development files that shouldn't be published
+lib/parsec-web/equations-parser/build/qtcreator/
+lib/parsec-web/equations-parser/build/vs2013/
+lib/parsec-web/equations-parser/value_test/
+lib/parsec-web/equations-parser/*.exe
+lib/parsec-web/equations-parser/*.ilk
+lib/parsec-web/equations-parser/*.pdb
+lib/parsec-web/equations-parser/*.tlog/
+lib/parsec-web/equations-parser/*.vcproj.*.user
+lib/parsec-web/equations-parser/*.vcxproj.user
+lib/parsec-web/equations-parser/build/vs2013/Debug/
+lib/parsec-web/equations-parser/build/qtcreator/README.txt
+lib/parsec-web/equations-parser/build/qtcreator/muparserx.pro
+
+# Development files
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (if any)
+node_modules/
+
+# Git files
+.git/
+.gitignore
+.gitattributes
