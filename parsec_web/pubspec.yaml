@@ -1,11 +1,11 @@
 name: parsec_web
 description: Web implementation of the parsec plugin using WebAssembly via dart:js_interop.
-version: 0.1.3
+version: 0.1.4
 repository: https://github.com/oxeanbits/parsec_flutter/tree/main/parsec_web
 
 environment:
-  sdk: ">=3.3.0 <4.0.0"
-  flutter: ">=3.19.0"
+  sdk: ">=3.4.0 <4.0.0"
+  flutter: ">=3.22.0"
 
 dependencies:
   flutter:

@@ -77,7 +77,7 @@ class ParsecWebGenerator {
     print('🔧 Building WebAssembly files...');
     
     if (!await _isEmscriptenAvailable()) {
-      print('❕ Emscripten (emcc) not found; skipping WASM build.');
+      print('❕ Emscripten C++ compiler (em++) not found; skipping WASM build.');
       print('   Tests may use a Dart fallback; to build locally, install Emscripten and re-run.');
       return;
     }
@@ -87,7 +87,7 @@ class ParsecWebGenerator {
   
   Future<bool> _isEmscriptenAvailable() async {
     try {
-      final result = await Process.run('which', ['emcc']);
+      final result = await Process.run('which', ['em++']);
       return result.exitCode == 0;
     } catch (e) {
       return false;
@@ -116,11 +116,12 @@ class ParsecWebGenerator {
     
     print('📋 Found equations-parser sources: ${cppFiles.length} files');
     
-    // Build emcc command
-    final List<String> emccArgs = [
+    // Build Emscripten command
+    final List<String> compilerArgs = [
       ...sources,
       '-I', 'equations-parser/parser',
       '-std=c++17',
+      '-fwasm-exceptions',
       '-s', 'WASM=1',
       '-s', 'ALLOW_MEMORY_GROWTH=1',
       '-s', 'MODULARIZE=1',
@@ -133,7 +134,7 @@ class ParsecWebGenerator {
       '-o', 'wasm/equations_parser.js',
     ];
     
-    final process = await Process.run('emcc', emccArgs, workingDirectory: parsecWebPath);
+    final process = await Process.run('em++', compilerArgs, workingDirectory: parsecWebPath);
     
     if (process.exitCode != 0) {
       throw Exception('Emscripten build failed:\n${process.stderr}');

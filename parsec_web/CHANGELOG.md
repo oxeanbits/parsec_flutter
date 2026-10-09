@@ -1,3 +1,8 @@
+## 0.1.4
+
+- Enable C++ exception handling in optimized WebAssembly builds.
+- Preserve the WebAssembly runtime after repeated invalid equations.
+
 ## 0.1.3
 
 - Update `parsec-web` library to remove unnecessary logs.
